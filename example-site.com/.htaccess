@@ -1,0 +1,12 @@
+Options +FollowSymlinks
+RewriteEngine on
+
+ErrorDocument 404 /404.html
+
+RewriteRule ^feed$ feed.xml [NC]
+RewriteRule ^\d+/(.+)\.html$ $1.html [NC]
+RewriteRule ^tag/(.+) tags/$1.html [NC]
+
+RewriteCond %{QUERY_STRING}  ^s=(.+)$
+RewriteRule ^(.*)$ tags/%1.html [NC]
+
