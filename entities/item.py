@@ -46,7 +46,7 @@ class Item:
 
   def create(self):
     path     = Config.getInstance().outputpath + "/" + self.path
-    filename = "%s%s.%s" % ( path, self.name, self.extension )
+    filename = "%s/%s.%s" % ( path, self.name, self.extension )
     filename = filename.replace( '//', '/' )
     if not os.path.exists( path ):
       os.mkdir(path)
