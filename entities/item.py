@@ -20,7 +20,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import re
 import os
-from core.config import Config
+import hashlib
+
+from core.config      import Config
+from core.diffmanager import DiffManager
 
 class Item:
   SLUGIFY_SPLIT_REGEXP = re.compile( r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+' )
@@ -31,6 +34,8 @@ class Item:
     self.extension = extension
     self.name      = self.__generate_name()
     self.url       = "%s/%s.%s" % (self.path,self.name,self.extension)
+    self.hash_id   = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
+    self.digest    = ""
 
   def __generate_name( self ):
       result = []
@@ -41,11 +46,16 @@ class Item:
 
   def create(self):
     path     = Config.getInstance().outputpath + "/" + self.path
-    filename = "%s/%s.%s" % ( path, self.name, self.extension )
+    filename = "%s%s.%s" % ( path, self.name, self.extension )
+    filename = filename.replace( '//', '/' )
     if not os.path.exists( path ):
       os.mkdir(path)
 
     content = self.render()
+
+    self.digest = hashlib.md5( content ).hexdigest()
+
+    DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
 
     fd = open( filename, "w+" )
     fd.write(content)

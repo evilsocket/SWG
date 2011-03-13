@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/python
 # This file is part of SWG (Static Website Generator).
 #
 # Copyright(c) 2010-2011 Simone Margaritelli
@@ -18,16 +19,16 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#!/usr/bin/python
 
 import os
 import re
 import shutil
 
-from optparse import OptionParser
-from core.config     import Config
-from core.pageparser import PageParser
-from entities.page   import Page
+from optparse         import OptionParser
+from core.config      import Config
+from core.pageparser  import PageParser
+from entities.page    import Page
+from core.diffmanager import DiffManager
 
 oparser = OptionParser( usage = "usage: %prog <configuration file>\n" )
 
@@ -102,7 +103,12 @@ try:
   for page in pages:
     page.setCustom( 'pages', pages ).create()
 
-  print "@ DONE"
-  
+  print "@ DONE\n"
+
+  for filename, info in DiffManager.getInstance().changes.items():
+    ( digest, status ) = info
+    print "@ %-8s : '%s'" % ( status, filename )
+
+  print
 except Exception as e:
 	print "! %s" % e
