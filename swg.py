@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # This file is part of SWG (Static Website Generator).
 #
 # Copyright(c) 2010-2011 Simone Margaritelli
@@ -34,7 +34,7 @@ oparser = OptionParser( usage = "usage: %prog <configuration file>\n" )
 
 (options, args) = oparser.parse_args()
 
-print "- SWG 1.0.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
+print "- SWG 1.1.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
 
 try:
 
@@ -45,28 +45,29 @@ try:
 
   Config.getInstance().load(configfile)
 
+  config = Config.getInstance()
   parser = PageParser( )
-  files  = os.listdir( Config.getInstance().dbpath + "/pages/" )
+  files  = os.listdir( config.dbpath + "/pages/" )
   pages  = []
 
   print "@ Parsing pages ..."
   for file in files:
-    if re.match( '^.+\.' + Config.getInstance().dbitem_ext + '$', file ):
-      page = parser.parse( Config.getInstance().dbpath + "/pages/" + file )
+    if re.match( '^.+\.' + config.dbitem_ext + '$', file ):
+      page = parser.parse( config.dbpath + "/pages/" + file )
       pages.append(page)
 
   print "@ Sorting pages by date ..."
   pages.sort( reverse=True, key=lambda p: p.datetime )
 
   # delete output directory and recreate it
-  if os.path.exists( Config.getInstance().outputpath ):
-    print "@ Removing old '%s' path ..." % Config.getInstance().outputpath
-    shutil.rmtree( Config.getInstance().outputpath )
+  if os.path.exists( config.outputpath ):
+    print "@ Removing old '%s' path ..." % config.outputpath
+    shutil.rmtree( config.outputpath )
 
-  print "@ Creating '%s' path ..." % Config.getInstance().outputpath
-  os.mkdir( Config.getInstance().outputpath )
+  print "@ Creating '%s' path ..." % config.outputpath
+  os.mkdir( config.outputpath )
 
-  for source, destination in Config.getInstance().copypaths.items():
+  for source, destination in config.copypaths.items():
     print "@ Importing '%s' to '%s' ..." % (source, destination)
     if os.path.isfile(source):
       shutil.copy( source, destination )
@@ -75,24 +76,18 @@ try:
     else:
       raise Exception("Unexpected type of '%s' ." % source )
 
-  if os.path.exists( Config.getInstance().tplpath + '/index.tpl' ):
+  if os.path.exists( config.tplpath + '/index.tpl' ):
     print "@ Creating index file ..."
-    Page( 'index', 'index.tpl' ).setCustom( 'pages', pages ).create()
+    index = Page( 'index', 'index.tpl' ).setCustom( 'pages', pages )
+    index.create()
   else:
     raise Exception( "No index template found." )
 
-  if os.path.exists( Config.getInstance().tplpath + '/404.tpl' ):
+  if os.path.exists( config.tplpath + '/404.tpl' ):
     print "@ Creating 404 file ..."
     Page( '404', '404.tpl' ).setCustom( 'pages', pages ).create()
 
-  if os.path.exists( Config.getInstance().tplpath + '/sitemap.tpl' ):
-    print "@ Creating sitemap.xml file ..."
-    sitemap = Page( 'sitemap', 'sitemap.tpl' )
-    sitemap.setCustom( 'pages', pages )
-    sitemap.extension = 'xml'
-    sitemap.create()
-
-  if os.path.exists( Config.getInstance().tplpath + '/feed.tpl' ):
+  if os.path.exists( config.tplpath + '/feed.tpl' ):
     print "@ Creating feed.xml file ..."
     feed = Page( 'feed', 'feed.tpl' )
     feed.setCustom( 'pages', pages )
@@ -103,12 +98,22 @@ try:
   for page in pages:
     page.setCustom( 'pages', pages ).create()
 
+  if os.path.exists( config.tplpath + '/sitemap.tpl' ):
+    print "@ Creating sitemap.xml file ..."
+    sitemap = Page( 'sitemap', 'sitemap.tpl' )
+    sitemap.setCustom( 'index', index )
+    sitemap.setCustom( 'pages', pages )
+    sitemap.extension = 'xml'
+    sitemap.create()
+
   print "@ DONE\n"
 
-  for filename, info in DiffManager.getInstance().changes.items():
-    ( digest, status ) = info
-    print "@ %-8s : '%s'" % ( status, filename )
+  if config.transfer is not None:
+    os.system( config.transfer.encode( "UTF-8" ) )
+  else:
+    for filename, info in DiffManager.getInstance().changes.items():
+      ( digest, status ) = info
+      print "@ %-8s : '%s'" % ( status, filename.encode( "UTF-8" ) )
 
-  print
 except Exception as e:
 	print "! %s" % e

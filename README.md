@@ -41,6 +41,12 @@ you specify from command line and generate a complete static website, with tags 
     outputpath = out
     # Items (dirs or files) to copy from datapath to outputpath (eg. static files, css, etc)
     copypaths  = css, images, .htaccess
+    # Command to execute once the generation is finished, for instance an rsync :)
+    transfer   = rsync -ravz out/* -e ssh user@example-site.com:/var/www/example-site.com/htdocs/
+    # Enable or disable the pager on categories, index, tags and author pages
+    pager      = true
+    # If pager is enabled, this is the maximum number of items per page
+    items_per_page = 10
 
 Pretty self explanatory isn't it ? :)
 
@@ -54,7 +60,7 @@ To start a test generation run:
 
 You will have an output like:
 
-    - SWG 1.0.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -
+    - SWG 1.1.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -
 
     @ Parsing pages ...
     @ Sorting pages by date ...

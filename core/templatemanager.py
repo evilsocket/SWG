@@ -25,11 +25,18 @@ from mako.lookup          import TemplateLookup
 
 class TemplateManager:
   __instance = None
-
+    
   def __init__(self):
-    self.lookup = TemplateLookup( directories     = [Config.getInstance().tplpath],
-                                  output_encoding = 'utf-8',
-                                  encoding_errors = 'replace' )
+    config = Config.getInstance()
+
+    self.lookup = TemplateLookup( directories     = [config.tplpath],
+                                  output_encoding = 'UTF-8',
+                                  encoding_errors = 'replace',
+                                  cache_enabled   = True,
+                                  cache_type      = 'file',
+                                  cache_dir       = config.tplcache,
+                                  collection_size = 1024
+                                )
 
   def get( self, name ):
     return self.lookup.get_template(name)
@@ -40,6 +47,8 @@ class TemplateManager:
                             categories = CategoryManager.getInstance().get(),
                             tags       = TagManager.getInstance().get(),
                             **kwargs )
+
+      
 
   @classmethod
   def getInstance(cls):

@@ -25,7 +25,7 @@ class Config:
   __instance = None;
 
   def __init__(self):
-    self.version    = "1.0.0"
+    self.version    = "1.1.0"
     
     self.now        = datetime.datetime.now()
     
@@ -44,12 +44,16 @@ class Config:
     self.language   = "en"
     self.keywords   = []
     
-    self.basepath   = ""
-    self.page_ext   = "html"
+    self.basepath       = ""
+    self.page_ext       = "html"
+    self.pager          = False
+    self.items_per_page = 10
 
     self.outputpath = "output"
 
     self.copypaths  = {}
+
+    self.transfer   = None
 
   def load( self, filename ):
     fd = codecs.open( filename, "r", "utf-8" )
@@ -86,6 +90,10 @@ class Config:
           self.page_ext = value
         elif key == 'outputpath':
           self.outputpath = value
+        elif key == 'pager':
+          self.pager = True if value.lower() == 'true' else False
+        elif key == 'items_per_page':
+          self.items_per_page = int(value)
         elif key == 'copypaths':
           items = value.split(',')
           items = map( lambda s: s.strip(), items )
@@ -94,6 +102,8 @@ class Config:
         elif key == 'keywords':
           items = value.split(',')
           self.keywords = map( lambda s: s.strip(), items )
+        elif key == 'transfer':
+          self.transfer = value
         else:
           raise Exception( "Unknown configuration key '%s'" % key )
 

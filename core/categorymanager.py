@@ -62,6 +62,12 @@ class CategoryManager:
 
     return None
 
+  # only for debug purpose
+  def __print_hierarchy(self,node,tabs = 0):
+    print "%s%s :" % ( "\t" * tabs, node.title )
+    for child in node.children:
+      self.__print_hierarchy( child, tabs + 1 )
+
   def __build_hierarchy(self):
     fd = codecs.open( Config.getInstance().hierarchy, "r", "utf-8" )
 
@@ -94,9 +100,8 @@ class CategoryManager:
           if h_root is not None and h_child is not None:
             h_root.children.append(h_child)
 
-       
     fd.close()
-  
+
   @classmethod
   def getInstance(cls):
     if cls.__instance is None:

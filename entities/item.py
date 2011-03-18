@@ -24,9 +24,15 @@ import hashlib
 
 from core.config      import Config
 from core.diffmanager import DiffManager
+from core.pager       import Pager
 
 class Item:
-  SLUGIFY_SPLIT_REGEXP = re.compile( r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+' )
+  SLUGIFY_SPLIT_REGEXP  = re.compile( r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+' )
+  PAGER_ENABLED_CLASSES = (
+    'entities.category.Category',
+    'entities.tag.Tag',
+    'entities.author.Author'
+  )
 
   def __init__( self, path, title, extension ):
     self.path      = path
@@ -36,6 +42,7 @@ class Item:
     self.url       = "%s/%s.%s" % (self.path,self.name,self.extension)
     self.hash_id   = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
     self.digest    = ""
+    self.npages    = 1
 
   def __generate_name( self ):
       result = []
@@ -44,19 +51,46 @@ class Item:
 
       return '-'.join(result)
 
-  def create(self):
-    path     = Config.getInstance().outputpath + "/" + self.path
-    filename = "%s/%s.%s" % ( path, self.name, self.extension )
-    filename = filename.replace( '//', '/' )
-    if not os.path.exists( path ):
-      os.mkdir(path)
+  def create(self):  
+    config = Config.getInstance()
+    path   = config.outputpath + "/" + self.path
 
-    content = self.render()
+    if config.pager == True and self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES:     
+      self.custom['pager'] = Pager( '%s.%s'     % (self.name, self.extension),
+                                    '%s-%%d.%s' % (self.name, self.extension) )
+                                    
+      if hasattr( self, 'items' ):
+        self.custom['pager'].setPages( self.items )
+      else:
+        self.custom['pager'].setPages( self.custom['pages'] )
 
-    self.digest = hashlib.md5( content ).hexdigest()
+      self.npages = self.custom['pager'].getTotalPages()
+     
+      for filename in self.custom['pager']:
+        filename = ("%s/%s" % ( path, filename )).replace( '//', '/' )
+        if not os.path.exists( path ):
+          os.mkdir(path)
 
-    DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
+        content = self.render()
 
-    fd = open( filename, "w+" )
-    fd.write(content)
-    fd.close()
+        self.digest = hashlib.md5( content ).hexdigest()
+
+        DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
+
+        fd = open( filename, "w+" )
+        fd.write(content)
+        fd.close()
+    else:
+      filename = ("%s/%s.%s" % ( path, self.name, self.extension )).replace( '//', '/' )
+      if not os.path.exists( path ):
+        os.mkdir(path)
+
+      content = self.render()
+
+      self.digest = hashlib.md5( content ).hexdigest()
+
+      DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
+
+      fd = open( filename, "w+" )
+      fd.write(content)
+      fd.close()
