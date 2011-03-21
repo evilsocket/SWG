@@ -122,7 +122,7 @@ DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 
 
 <FilesMatch .*\.(""" + config.page_ext + """)>
   RewriteEngine on
-  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{HTTP:Accept-Encoding} gzip
   RewriteCond %{REQUEST_FILENAME}.gz -f
   RewriteRule ^(.*)$ $1.gz [L]
 </FilesMatch>""" )
@@ -143,7 +143,7 @@ DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 
 
 <FilesMatch .*\.(""" + config.page_ext + """)>
   RewriteEngine on
-  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{HTTP:Accept-Encoding} gzip
   RewriteCond %{REQUEST_FILENAME}.gz -f
   RewriteRule ^(.*)$ $1.gz [L]
 </FilesMatch>""" )
