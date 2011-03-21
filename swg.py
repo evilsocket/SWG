@@ -122,8 +122,6 @@ DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 
 
 <FilesMatch .*\.(""" + config.page_ext + """)>
   RewriteEngine on
-  RewriteCond %{HTTP_USER_AGENT} !MSIE [OR]
-  RewriteCond %{HTTP_USER_AGENT} !Safari
   RewriteCond %{HTTP:Accept-encoding} gzip
   RewriteCond %{REQUEST_FILENAME}.gz -f
   RewriteRule ^(.*)$ $1.gz [L]
@@ -145,8 +143,6 @@ DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 
 
 <FilesMatch .*\.(""" + config.page_ext + """)>
   RewriteEngine on
-  RewriteCond %{HTTP_USER_AGENT} !MSIE [OR]
-  RewriteCond %{HTTP_USER_AGENT} !Safari
   RewriteCond %{HTTP:Accept-encoding} gzip
   RewriteCond %{REQUEST_FILENAME}.gz -f
   RewriteRule ^(.*)$ $1.gz [L]
