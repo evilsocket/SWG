@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # This file is part of SWG (Static Website Generator).
@@ -34,7 +35,7 @@ oparser = OptionParser( usage = "usage: %prog <configuration file>\n" )
 
 (options, args) = oparser.parse_args()
 
-print "- SWG 1.1.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
+print "- SWG 1.2.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
 
 try:
 
@@ -105,6 +106,52 @@ try:
     sitemap.setCustom( 'pages', pages )
     sitemap.extension = 'xml'
     sitemap.create()
+
+  if config.gzip is True:
+    htaccess = "%s/.htaccess" % config.outputpath
+    if os.path.exists( htaccess ):
+      fd = open( htaccess, "a+t" )
+      fd.write( """
+# SWG Generated Code
+AddEncoding gzip .gz
+DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 index.phtml index.cgi index.html.gz
+
+<Files *.""" + config.page_ext + """.gz>
+  ForceType text/html
+</Files>
+
+<FilesMatch .*\.(""" + config.page_ext + """)>
+  RewriteEngine on
+  RewriteCond %{HTTP_USER_AGENT} !MSIE [OR]
+  RewriteCond %{HTTP_USER_AGENT} !Safari
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}.gz -f
+  RewriteRule ^(.*)$ $1.gz [L]
+</FilesMatch>""" )
+      fd.close()
+    else:
+      fd = open( htaccess, "w+t" )
+      fd.write( """
+# SWG Generated Code
+Options +FollowSymlinks
+RewriteEngine on
+
+AddEncoding gzip .gz
+DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 index.phtml index.cgi index.html.gz
+
+<Files *.""" + config.page_ext + """.gz>
+  ForceType text/html
+</Files>
+
+<FilesMatch .*\.(""" + config.page_ext + """)>
+  RewriteEngine on
+  RewriteCond %{HTTP_USER_AGENT} !MSIE [OR]
+  RewriteCond %{HTTP_USER_AGENT} !Safari
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}.gz -f
+  RewriteRule ^(.*)$ $1.gz [L]
+</FilesMatch>""" )
+      fd.close()
 
   print "@ DONE\n"
 

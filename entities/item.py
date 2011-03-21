@@ -21,6 +21,7 @@
 import re
 import os
 import hashlib
+import gzip
 
 from core.config      import Config
 from core.diffmanager import DiffManager
@@ -51,6 +52,15 @@ class Item:
 
       return '-'.join(result)
 
+  def __save_contents( self, filename, contents ):
+    if Config.getInstance().gzip is False or '.' + Config.getInstance().page_ext not in filename:
+      fd = open( filename, "w+" )
+    else:
+      fd = gzip.open( "%s.gz" % filename.encode('UTF-8'), 'w+b' )
+
+    fd.write(contents)
+    fd.close()
+
   def create(self):  
     config = Config.getInstance()
     path   = config.outputpath + "/" + self.path
@@ -77,9 +87,7 @@ class Item:
 
         DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
 
-        fd = open( filename, "w+" )
-        fd.write(content)
-        fd.close()
+        self.__save_contents( filename, content )
     else:
       filename = ("%s/%s.%s" % ( path, self.name, self.extension )).replace( '//', '/' )
       if not os.path.exists( path ):
@@ -91,6 +99,4 @@ class Item:
 
       DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
 
-      fd = open( filename, "w+" )
-      fd.write(content)
-      fd.close()
+      self.__save_contents( filename, content )

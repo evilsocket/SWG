@@ -47,6 +47,8 @@ you specify from command line and generate a complete static website, with tags 
     pager      = true
     # If pager is enabled, this is the maximum number of items per page
     items_per_page = 10
+    # Compress pages (ie. index.html.gz) and create (or update) .htaccess file to serve them as html files
+    gzip       = true
 
 Pretty self explanatory isn't it ? :)
 
@@ -60,7 +62,7 @@ To start a test generation run:
 
 You will have an output like:
 
-    - SWG 1.1.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -
+    - SWG 1.2.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -
 
     @ Parsing pages ...
     @ Sorting pages by date ...
