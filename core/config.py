@@ -25,7 +25,7 @@ class Config:
   __instance = None;
 
   def __init__(self):
-    self.version    = "1.2.0"
+    self.version    = "1.2.1"
     
     self.now        = datetime.datetime.now()
     
@@ -51,7 +51,8 @@ class Config:
 
     self.outputpath = "output"
 
-    self.gzip       = False
+    self.gzip        = False
+    self.compression = 0
 
     self.copypaths  = {}
 
@@ -96,6 +97,8 @@ class Config:
           self.pager = True if value.lower() == 'true' else False
         elif key == 'gzip':
           self.gzip = True if value.lower() == 'true' else False
+        elif key == 'compression':
+          self.compression = int(value)
         elif key == 'items_per_page':
           self.items_per_page = int(value)
         elif key == 'copypaths':

@@ -21,7 +21,6 @@
 import re
 import os
 import hashlib
-import gzip
 
 from core.config      import Config
 from core.diffmanager import DiffManager
@@ -36,14 +35,17 @@ class Item:
   )
 
   def __init__( self, path, title, extension ):
-    self.path      = path
-    self.title     = title
-    self.extension = extension
-    self.name      = self.__generate_name()
-    self.url       = "%s/%s.%s" % (self.path,self.name,self.extension)
-    self.hash_id   = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
-    self.digest    = ""
-    self.npages    = 1
+    self.path        = path
+    self.title       = title
+    self.extension   = extension
+    self.name        = self.__generate_name()
+    self.url         = "%s/%s.%s" % (self.path,self.name,self.extension)
+    self.hash_id     = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
+    self.digest      = ""
+    self.npages      = 1
+    self.gzip        = Config.getInstance().gzip
+    self.compression = Config.getInstance().compression
+    self.gzip_allow  = re.compile( '^.+\.' + Config.getInstance().page_ext + '$', re.IGNORECASE )
 
   def __generate_name( self ):
       result = []
@@ -53,13 +55,22 @@ class Item:
       return '-'.join(result)
 
   def __save_contents( self, filename, contents ):
-    if Config.getInstance().gzip is False or '.' + Config.getInstance().page_ext not in filename:
-      fd = open( filename, "w+" )
-    else:
-      fd = gzip.open( "%s.gz" % filename.encode('UTF-8'), 'w+b' )
+    if self.gzip is True and self.gzip_allow.match( filename ):
+      import gzip
+      import cStringIO
 
-    fd.write(contents)
+      fdio = cStringIO.StringIO()
+      fd   = gzip.GzipFile( mode = 'wb',  fileobj = fdio, compresslevel = 9 )
+      fd.write( contents )
+      fd.close()
+
+      filename = filename + u'.gz'
+      contents = fdio.getvalue()
+
+    fd = open( filename.encode('UTF-8'), "w+b" )
+    fd.write( contents )
     fd.close()
+   
 
   def create(self):  
     config = Config.getInstance()

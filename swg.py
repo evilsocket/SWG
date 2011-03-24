@@ -35,7 +35,7 @@ oparser = OptionParser( usage = "usage: %prog <configuration file>\n" )
 
 (options, args) = oparser.parse_args()
 
-print "- SWG 1.2.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
+print "- SWG 1.2.1 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
 
 try:
 
