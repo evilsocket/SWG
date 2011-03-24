@@ -1,6 +1,0 @@
-username: example-author
-avatar: http://img217.imageshack.us/img217/3795/anonymousoi0.jpg
-email: example-email@provider.com
-website: http://www.example-site.com
-
-Some info about you.

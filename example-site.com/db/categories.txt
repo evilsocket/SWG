@@ -1,6 +1,0 @@
-Hacking: Exploiting, Reversing, Tools, Wardriving, Web Hacking
-Misc
-Papers
-Personali
-Programmazione: Biometria, iPhone, Sorgenti
-Sorgenti: Assemby, BASH, C, C++, Java, Javascript/AJAX, Objective C, Perl, PHP, Python

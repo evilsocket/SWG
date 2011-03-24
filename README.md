@@ -49,43 +49,13 @@ you specify from command line and generate a complete static website, with tags 
     items_per_page = 10
     # Compress pages (ie. index.html.gz) and create (or update) .htaccess file to serve them as html files
     gzip       = true
+    # Compression level, 0 to 9
+    compression = 9
 
 Pretty self explanatory isn't it ? :)
 
 ### Example project
 
-You will find an example site in the example-site.com directory, with templates, db and everything else you need to start.
-
-To start a test generation run:
-
-    python swg.py example-site.com/example-site.com.cfg
-
-You will have an output like:
-
-    - SWG 1.2.0 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -
-
-    @ Parsing pages ...
-    @ Sorting pages by date ...
-    @ Creating 'out' path ...
-    @ Importing 'example-site.com/images' to 'out/images' ...
-    @ Importing 'example-site.com/.htaccess' to 'out/.htaccess' ...
-    @ Importing 'example-site.com/css' to 'out/css' ...
-    @ Creating index file ...
-    @ Creating 404 file ...
-    @ Creating sitemap.xml file ...
-    @ Creating feed.xml file ...
-    @ Rendering 5 pages ...
-    @ DONE
-
-Then upload the contents of 'out' directory to your web server to see the example site.
-If you want to test it locally on your machine, you will have to change the line :
-
-    siteurl    = http://www.example-site.com
-
-In the configuration file to something like:
-
-    siteurl    = file:///your/project/path/out
-
-And then simply open 'out/index.html' with your preferred web browser.
+For an example site, look at my personal blog github repo located here https://github.com/evilsocket/evilsocket.net
 
 Enjoy ^^
