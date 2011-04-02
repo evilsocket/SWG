@@ -29,7 +29,7 @@ class Tag(Item):
     self.title    = title
     self.items    = []
     self.template = core.templatemanager.TemplateManager.getInstance().get('tag.tpl')
-    self.custom     = {}
+    self.custom   = {}
 
   def setCustom( self, name, value ):
     self.custom[name] = value

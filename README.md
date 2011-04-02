@@ -51,6 +51,8 @@ you specify from command line and generate a complete static website, with tags 
     gzip       = true
     # Compression level, 0 to 9
     compression = 9
+    # Clean output html with TIDY
+    tidyfy = true
 
 Pretty self explanatory isn't it ? :)
 

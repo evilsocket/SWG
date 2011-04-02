@@ -35,7 +35,7 @@ oparser = OptionParser( usage = "usage: %prog <configuration file>\n" )
 
 (options, args) = oparser.parse_args()
 
-print "- SWG 1.2.1 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
+print "- SWG 1.2.2 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
 
 try:
 
@@ -156,5 +156,5 @@ DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 
       ( digest, status ) = info
       print "@ %-8s : '%s'" % ( status, filename.encode( "UTF-8" ) )
 
-except Exception as e:
-	print "! %s" % e
+except Exception as e:	
+  raise

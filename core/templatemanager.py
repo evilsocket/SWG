@@ -30,7 +30,8 @@ class TemplateManager:
     config = Config.getInstance()
 
     self.lookup = TemplateLookup( directories     = [config.tplpath],
-                                  output_encoding = 'UTF-8',
+                                  output_encoding = 'utf-8',
+                                  input_encoding  = 'utf-8',
                                   encoding_errors = 'replace',
                                   cache_enabled   = True,
                                   cache_type      = 'file',

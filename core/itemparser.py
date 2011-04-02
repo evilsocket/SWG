@@ -18,6 +18,7 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from core.config import Config
 from dateutil import parser as datetime_parser
 import codecs
 
@@ -28,6 +29,33 @@ class ItemParser:
   PARSE_DONE_STATE = 3
 
   BODY_ABSTRACT_BREAK = u'<break>'
+
+  TIDY_OPTIONS = {  'alt-text'          : ' ',
+                    'doctype'           : 'transitional',
+                    'bare'              : 1,
+                    'clean'             : 0,
+                    'hide-comments'     : 1,
+                    'join-classes'      : 1,
+                    'join-styles'       : 1,
+                    'output-xhtml'      : 1,
+                    'quote-nbsp'        : 0,
+                    'preserve-entities' : 1,
+                    'show-errors'       : 0,
+                    'show-warnings'     : 0,
+                    'wrap'              : 0,
+                    'sort-attributes'   : 'alpha',
+                    'char-encoding'     : 'utf8',
+                    'input-encoding'    : 'utf8',
+                    'output-encoding'   : 'utf8',
+                    'indent'            : 0,
+                    'indent-spaces'     : 0,
+                    'newline'           : 'LF',
+                    'output-bom'        : 0,
+                    'force-output'      : 1,
+                    'quiet'             : 1,
+                    'tidy-mark'         : 0,
+                    'show-body-only'    : 1
+                  }
 
   def __init__(self):
     self.info     = {}
@@ -91,7 +119,17 @@ class ItemParser:
     else:
       self.abstract = self.body
 
+    # Fix <break> pseudo attribute newlines
     self.body     = self.body.replace( "\n\n", "<br/><br/>" )
     self.abstract = self.abstract.replace( "\n\n", "<br/><br/>" )
+
+    # Tidyfy abstract and body html and fix encoding errors
+    if Config.getInstance().tidyfy is True:
+      import tidy
+
+      self.body     = tidy.parseString( self.body.encode( 'UTF-8',     'replace' ),     **ItemParser.TIDY_OPTIONS )
+      self.abstract = tidy.parseString( self.abstract.encode( 'UTF-8', 'replace' ), **ItemParser.TIDY_OPTIONS )
+      self.body     = str(self.body).decode('UTF-8')
+      self.abstract = str(self.abstract).decode('UTF-8')
 
     fd.close()
