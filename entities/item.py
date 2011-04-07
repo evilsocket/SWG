@@ -27,7 +27,7 @@ from core.diffmanager import DiffManager
 from core.pager       import Pager
 
 class Item:
-  SLUGIFY_SPLIT_REGEXP  = re.compile( r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+' )
+  SLUGIFY_SPLIT_REGEXP  = re.compile( r'[^\w]+' )
   PAGER_ENABLED_CLASSES = (
     'entities.category.Category',
     'entities.tag.Tag',

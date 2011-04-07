@@ -1,4 +1,3 @@
-import os.path
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # This file is part of SWG (Static Website Generator).
@@ -22,6 +21,7 @@ import os.path
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import os
+import os.path
 import re
 import shutil
 
