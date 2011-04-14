@@ -25,7 +25,7 @@ class Config:
   __instance = None;
 
   def __init__(self):
-    self.version    = "1.2.2"
+    self.version    = "1.2.3"
     
     self.now        = datetime.datetime.now()
     
@@ -48,6 +48,8 @@ class Config:
     self.page_ext       = "html"
     self.pager          = False
     self.items_per_page = 10
+
+    self.editor = 'vim';
 
     self.outputpath = "output"
 
@@ -93,6 +95,8 @@ class Config:
           self.basepath = value
         elif key == 'page_ext':
           self.page_ext = value
+        elif key == 'editor':
+          self.editor = value
         elif key == 'outputpath':
           self.outputpath = value
         elif key == 'pager':
