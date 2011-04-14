@@ -68,7 +68,7 @@ Categories:
 Tags:
 Title:
 
-""" % config.now.strftime("%Y-%m-%d %H:%M:%S") )
+""" % config.now.strftime("%Y-%d-%m %H:%M:%S") )
     fd.close()
     
     os.system( "%s %s" % ( config.editor, newitem ) )
