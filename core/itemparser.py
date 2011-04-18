@@ -115,7 +115,7 @@ class ItemParser:
 
     if ItemParser.BODY_ABSTRACT_BREAK in self.body:
       ( self.abstract, therest ) = self.body.split( ItemParser.BODY_ABSTRACT_BREAK, 1 )
-      self.body = self.abstract + therest
+      self.body = self.abstract.strip() + '<br/><br/>' + therest.strip()
     else:
       self.abstract = self.body
 
