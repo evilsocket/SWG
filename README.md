@@ -9,6 +9,42 @@ have both performances and "WEB 2.0" contents and capabilities.
 Given a set of files, one for each page/article, one for each author and one for the categories hyerarchy, SWG will read the configuration file
 you specify from command line and generate a complete static website, with tags and categories indexing.
 
+### Importing from another platform
+
+Right now, in the 'importers' directory of the project, there's a script to convert a WordPress XML backup file to the
+SWG format, to use it consider the following:
+
+    python wordpress.py --help
+    - SWG Wordpress Backup Importer -
+    
+    Usage: wordpress.py -i wordpress-backup.xml -u 'http://www.your-site-url.com' <options>
+    
+    
+    Options:
+      -h, --help            show this help message and exit
+      -i WPBACKUP, --input=WPBACKUP
+                            The Wordpress XML backup file.
+      -u SITEURL, --url=SITEURL
+                            URL of the destination website.
+      -o OUTDIR, --output=OUTDIR
+                            Output directory, default is the current working
+                            directory.
+      -e FILEEXT, --extension=FILEEXT
+                            Output file extension, default is txt.
+      -I IMGDIR, --images=IMGDIR
+                            If specified, it's the path where the importer will
+                            try to download images referenced by articles.
+
+So let's say for instance, that you have your wp.xml file and you want to export it to the 'example-site.com' directory, downloading
+images referenced by the articles into the 'example-site.com/images' directory (the import will replace properly image urls), you
+will use the command line:
+
+    python wordpress.py -i wp.xml -u http://www.example-site.com -o 'example-site.com' -I 'example-site.com/images'
+
+And it's all done!
+Now you just have to create the templates, fix the categories hyerarchy inside the file 'example-site.com/db/categories.txt', customize
+your own description inside 'example-site.com/db/your-nickname.txt' and make the configuration file following the example below.
+
 ### An example configuration file
 
     # Path of the db, templates and so on
