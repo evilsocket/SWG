@@ -74,7 +74,7 @@ Title:
     print "@ Parsing pages ..."
     for file in self.files:
       if re.match( '^.+\.' + self.config.dbitem_ext + '$', file ):
-        filename = os.join( self.dbdir, file )
+        filename = os.path.join( self.dbdir, file )
         page     = parser.parse( filename )
         pages.append(page)
 
