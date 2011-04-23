@@ -31,11 +31,15 @@ class Category(Item):
     self.children = []
     self.template = core.templatemanager.TemplateManager.getInstance().get('category.tpl')
     self.custom   = {}
+    self.sorted   = False
 
   def setCustom( self, name, value ):
     self.custom[name] = value
     return self
 
   def render( self ):
-    self.items.sort( reverse=True, key=lambda item: item.datetime )
+    if not self.sorted:
+      self.items.sort( reverse=True, key=lambda item: item.datetime )
+      self.sorted = True
+
     return core.templatemanager.TemplateManager.render( template = self.template, category = self, **self.custom )

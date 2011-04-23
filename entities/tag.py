@@ -18,8 +18,8 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from entities.item        import Item
-from core.config          import Config
+from entities.item import Item
+from core.config   import Config
 
 import core.templatemanager
 
@@ -30,11 +30,15 @@ class Tag(Item):
     self.items    = []
     self.template = core.templatemanager.TemplateManager.getInstance().get('tag.tpl')
     self.custom   = {}
+    self.sorted   = False
 
   def setCustom( self, name, value ):
     self.custom[name] = value
     return self
 
   def render( self ):
-    self.items.sort( reverse=True, key=lambda item: item.datetime )
+    if not self.sorted:
+      self.items.sort( reverse=True, key=lambda item: item.datetime )
+      self.sorted = True
+
     return core.templatemanager.TemplateManager.render( template = self.template, tag = self, **self.custom )

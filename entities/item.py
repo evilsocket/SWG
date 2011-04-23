@@ -74,7 +74,7 @@ class Item:
 
   def create(self):  
     config = Config.getInstance()
-    path   = config.outputpath + "/" + self.path
+    path   = os.path.join( config.outputpath, self.path )
 
     if config.pager == True and self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES:     
       self.custom['pager'] = Pager( '%s.%s'     % (self.name, self.extension),
@@ -88,7 +88,7 @@ class Item:
       self.npages = self.custom['pager'].getTotalPages()
      
       for filename in self.custom['pager']:
-        filename = ("%s/%s" % ( path, filename )).replace( '//', '/' )
+        filename = os.path.join( path, filename )
         if not os.path.exists( path ):
           os.mkdir(path)
 
@@ -100,7 +100,7 @@ class Item:
 
         self.__save_contents( filename, content )
     else:
-      filename = ("%s/%s.%s" % ( path, self.name, self.extension )).replace( '//', '/' )
+      filename = os.path.join( path, "%s.%s" % (self.name, self.extension) )
       if not os.path.exists( path ):
         os.mkdir(path)
 

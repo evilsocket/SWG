@@ -34,12 +34,16 @@ class Author(Item):
     self.content  = ""
     self.template = TemplateManager.getInstance().get('author.tpl')
     self.custom   = {}
+    self.sorted   = False
 
   def setCustom( self, name, value ):
     self.custom[name] = value
     return self
   
   def render( self ):
-    self.items.sort( reverse=True, key=lambda item: item.datetime )
+    if not self.sorted:
+      self.items.sort( reverse=True, key=lambda item: item.datetime )
+      self.sorted = True
+
     return TemplateManager.render( template = self.template, author = self, **self.custom )
 
