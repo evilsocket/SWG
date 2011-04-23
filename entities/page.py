@@ -47,13 +47,15 @@ class Page(Item):
 
     # create only authors not already done
     if self.author != None and not os.path.exists( Config.getInstance().outputpath + "/" + self.author.url ):
-      self.author.setCustom( name, value )
+      for name, value in self.custom.items():
+        self.author.setCustom( name, value )
       self.author.create()
 
     for category in self.categories:
       # create only categories not already done
       if not os.path.exists( Config.getInstance().outputpath + "/" + category.url ):
-        category.setCustom( name, value )
+        for name,value in self.custom.items()
+          category.setCustom( name, value )
         category.create()
 
     for tag in self.tags:
