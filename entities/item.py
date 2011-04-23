@@ -74,7 +74,10 @@ class Item:
 
   def create(self):  
     config = Config.getInstance()
-    path   = os.path.join( config.outputpath, self.path )
+    path   = config.outputpath + os.sep + self.path
+
+    if not os.path.exists( path ):
+      os.mkdir(path)
 
     if config.pager == True and self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES:     
       self.custom['pager'] = Pager( '%s.%s'     % (self.name, self.extension),
@@ -89,10 +92,7 @@ class Item:
      
       for filename in self.custom['pager']:
         filename = os.path.join( path, filename )
-        if not os.path.exists( path ):
-          os.mkdir(path)
-
-        content = self.render()
+        content  = self.render()
 
         self.digest = hashlib.md5( content ).hexdigest()
 
@@ -101,10 +101,7 @@ class Item:
         self.__save_contents( filename, content )
     else:
       filename = os.path.join( path, "%s.%s" % (self.name, self.extension) )
-      if not os.path.exists( path ):
-        os.mkdir(path)
-
-      content = self.render()
+      content  = self.render()
 
       self.digest = hashlib.md5( content ).hexdigest()
 
