@@ -25,7 +25,6 @@ import os.path
 import re
 import shutil
 
-from optparse         import OptionParser
 from core.config      import Config
 from core.pageparser  import PageParser
 from entities.page    import Page

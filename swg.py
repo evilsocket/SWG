@@ -19,7 +19,8 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from engine import Engine
+from engine   import Engine
+from optparse import OptionParser
 
 oparser = OptionParser( usage = "usage: %prog <configuration file> (new)\n" )
 
