@@ -38,7 +38,8 @@ class Page(Item):
   def setCustom( self, name, value ):
     self.custom[name] = value
 
-    self.author.setCustom( name, value )
+    if self.author is not None:
+      self.author.setCustom( name, value )
     
     for category in self.categories:
       category.setCustom( name, value )
