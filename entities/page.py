@@ -45,18 +45,17 @@ class Page(Item):
   def create( self ):
     Item.create(self)
 
+    k_custom = self.custom.keys()[0]
+    v_custom = self.custom.value()[0]
+
     # create only authors not already done
     if self.author != None and not os.path.exists( Config.getInstance().outputpath + "/" + self.author.url ):
-      for name, value in self.custom.items():
-        self.author.setCustom( name, value )
-      self.author.create()
+      self.author.setCustom( k_custom, v_custom ).create()
 
     for category in self.categories:
       # create only categories not already done
       if not os.path.exists( Config.getInstance().outputpath + "/" + category.url ):
-        for name,value in self.custom.items():
-          category.setCustom( name, value )
-        category.create()
+        category.setCustom( k_custom, v_custom ).create()
 
     for tag in self.tags:
       # create only tags not already done
