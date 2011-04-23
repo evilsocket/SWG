@@ -68,7 +68,7 @@ Title:
   def serve( self ):
     pass
 
-  def generate( self )
+  def generate( self ):
     parser = PageParser( )
     pages  = []
 
