@@ -34,7 +34,7 @@ class Engine:
   def __init__(self):
     self.config = Config.getInstance()
     self.dbdir  = os.path.join( self.config.dbpath, 'pages' )
-    self.files  = os.listdir( dbdir ) 
+    self.files  = os.listdir( self.dbdir ) 
 
   def new( self ):
     maxid = 0
