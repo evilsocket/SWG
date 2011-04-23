@@ -129,7 +129,7 @@ Title:
       sitemap.extension = 'xml'
       sitemap.create()
 
-    ifself.config.gzip is True:
+    if self.config.gzip is True:
       htaccess = os.path.join( self.config.outputpath, '.htaccess' ) 
       if os.path.exists( htaccess ):
         fd = open( htaccess, "a+t" )
