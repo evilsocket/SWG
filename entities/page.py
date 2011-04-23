@@ -42,7 +42,7 @@ class Page(Item):
       self.author.setCustom( name, value )
 
     for category in self.categories:
-      self.category.setCustom( name, value )
+      category.setCustom( name, value )
 
     for tag in self.tags:
       self.tag.setCustom( name, value )
