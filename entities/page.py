@@ -54,7 +54,7 @@ class Page(Item):
     for category in self.categories:
       # create only categories not already done
       if not os.path.exists( Config.getInstance().outputpath + "/" + category.url ):
-        for name,value in self.custom.items()
+        for name,value in self.custom.items():
           category.setCustom( name, value )
         category.create()
 
