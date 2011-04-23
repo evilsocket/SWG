@@ -37,6 +37,16 @@ class Page(Item):
 
   def setCustom( self, name, value ):
     self.custom[name] = value
+
+    if self.author is not None:
+      self.author.setCustom( name, value )
+
+    for category in self.categories:
+      self.category.setCustom( name, value )
+
+    for tag in self.tags:
+      self.tag.setCustom( name, value )
+
     return self
 
   def render( self ):
@@ -45,17 +55,14 @@ class Page(Item):
   def create( self ):
     Item.create(self)
 
-    k_custom = self.custom.keys()[0]
-    v_custom = self.custom.values()[0]
-
     # create only authors not already done
     if self.author != None and not os.path.exists( Config.getInstance().outputpath + "/" + self.author.url ):
-      self.author.setCustom( k_custom, v_custom ).create()
+      self.author.create()
 
     for category in self.categories:
       # create only categories not already done
       if not os.path.exists( Config.getInstance().outputpath + "/" + category.url ):
-        category.setCustom( k_custom, v_custom ).create()
+        category.create()
 
     for tag in self.tags:
       # create only tags not already done
