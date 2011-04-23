@@ -46,7 +46,7 @@ class Page(Item):
     Item.create(self)
 
     k_custom = self.custom.keys()[0]
-    v_custom = self.custom.value()[0]
+    v_custom = self.custom.values()[0]
 
     # create only authors not already done
     if self.author != None and not os.path.exists( Config.getInstance().outputpath + "/" + self.author.url ):
