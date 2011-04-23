@@ -45,7 +45,7 @@ class Page(Item):
       category.setCustom( name, value )
 
     for tag in self.tags:
-      self.tag.setCustom( name, value )
+      tag.setCustom( name, value )
 
     return self
 
