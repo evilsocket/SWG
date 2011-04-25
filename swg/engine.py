@@ -37,7 +37,8 @@ class Engine:
   def __init__(self):
     self.config = Config.getInstance()
     self.dbdir  = os.path.join( self.config.dbpath, 'pages' )
-    self.files  = os.listdir( self.dbdir ) 
+    self.files  = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
+    self.path   = os.path.dirname( os.path.realpath( __file__ + os.sep + '..' ) )
 
   def new( self ):
     maxid = 0
@@ -67,7 +68,32 @@ Title:
     else:
       print "@ Item was not saved, quitting ."
 
+  def create( self, destfolder ):
+    if os.path.exists(destfolder):
+      sys.exit( "@ The folder '%s' already exists, operation interrupted for security reasons." % destfolder )  
+    else:
+      print "@ Creating SWG basic website structure inside the '%s' folder ..." % destfolder
+
+      shutil.copytree( os.path.join( self.path, 'basic' ), destfolder )
+
+      print """\
+@ Basic website initialized, now run:
+
+  cd %s
+  swg --generate
+
+To generate the html contents or:
+
+  cd %s
+  swg --serve
+
+To test the website locally.""" % (destfolder,destfolder)
+
   def serve( self ):
+
+    class SWGServer(SocketServer.TCPServer):
+      allow_reuse_address = True
+
     self.config.siteurl = 'http://localhost:8080/'
     self.generate()
 
@@ -76,7 +102,7 @@ Title:
     print "\n@ Serving the site on http://localhost:8080/ press ctrl+c to exit ..."
     
     try:
-      SocketServer.TCPServer( ("",8080), SimpleHTTPServer.SimpleHTTPRequestHandler ).serve_forever()
+      SWGServer( ("",8080), SimpleHTTPServer.SimpleHTTPRequestHandler ).serve_forever()
     except KeyboardInterrupt:
       print "\n@ Bye :)"
 

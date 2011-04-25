@@ -27,6 +27,7 @@ print "- SWG %s by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n" 
 
 oparser = OptionParser( usage = "usage: %prog <action>\n" )
 
+oparser.add_option( '-C', '--create',   action = 'store_const', const = 'create',   dest = 'action', help = 'Create a new website basic structure, require a folder name additional parameter.' )
 oparser.add_option( '-N', '--new',      action = 'store_const', const = 'new',      dest = 'action', help = 'Create a new item and open an editor to edit it.' )
 oparser.add_option( '-G', '--generate', action = 'store_const', const = 'generate', dest = 'action', help = 'Start website generation.' )
 oparser.add_option( '-S', '--serve',    action = 'store_const', const = 'serve',    dest = 'action', help = 'Generate website and test it on http://localhost:8080/' )
@@ -34,16 +35,22 @@ oparser.add_option( '-S', '--serve',    action = 'store_const', const = 'serve',
 (options, args) = oparser.parse_args()
 
 try:
-
-  Config.getInstance().load('swg.cfg')
  
   if options.action is None:
     oparser.error( "No action specified, use --help to see a list of available actions." )
+  elif options.action == 'create':
+    if args == []:
+      oparser.error( "No website folder specified, please use the syntax '--create website-folder-name'.")
+    else:
+      Engine().create( args[0].strip() )
   elif options.action == 'new':
+    Config.getInstance().load('swg.cfg')
     Engine().new()
   elif options.action == 'serve':
+    Config.getInstance().load('swg.cfg')
     Engine().serve()
   elif options.action == 'generate':
+    Config.getInstance().load('swg.cfg')
     Engine().generate()  
   else:
     oparser.error( "%s invalid action!" % options.action )

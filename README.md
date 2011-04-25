@@ -9,6 +9,21 @@ have both performances and "WEB 2.0" contents and capabilities.
 Given a set of files, one for each page/article, one for each author and one for the categories hyerarchy, SWG will read the configuration file
 you specify from command line and generate a complete static website, with tags and categories indexing.
 
+### Create a new website
+
+To start a new website, type:
+
+    swg --create website-folder-name
+
+An example site with a basic structure will be created inside the 'website-folder-name' directory.
+Then you can type:
+
+    cd website-folder-name
+    swg --serve
+
+To test the website locally.
+The first article is about customization and basic configuration, so read it carefully.
+
 ### Generate your website
 
 Once you are in the directory containing your website definition (with a swg.cfg file in it), just run:
