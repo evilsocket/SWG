@@ -19,7 +19,7 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os, shutil, stat
+import os, shutil, sys, stat
 
 if not os.geteuid() == 0:
   sys.exit( "Only root can run this script\n" )
