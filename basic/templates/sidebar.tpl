@@ -10,7 +10,7 @@
             class="cat-item"
           %endif    
           >  
-            <a href='${config.siteurl}index.${config.page_ext}'>Home</a>
+            <a href='${config.siteurl}/index.${config.page_ext}'>Home</a>
           </li>
 
 			              <li
@@ -20,7 +20,7 @@
             class="cat-item"
           %endif    
           >  
-            <a href='${config.siteurl}members/your-name-here.${config.page_ext}'>About Me</a>
+            <a href='${config.siteurl}/members/your-name-here.${config.page_ext}'>About Me</a>
           </li>
 		  </ul>
 		</li>

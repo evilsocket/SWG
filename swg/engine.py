@@ -94,7 +94,7 @@ To test the website locally.""" % (destfolder,destfolder)
     class SWGServer(SocketServer.TCPServer):
       allow_reuse_address = True
 
-    self.config.siteurl = 'http://localhost:8080/'
+    self.config.siteurl = 'http://localhost:8080'
     self.generate()
 
     os.chdir( self.config.outputpath )

@@ -38,7 +38,7 @@
     
     <meta name="generator" content="SWG ${config.version}" />
 
-    <link rel="stylesheet" href="${config.siteurl}css/style.css" type="text/css" media="screen" /> 
+    <link rel="stylesheet" href="${config.siteurl}/css/style.css" type="text/css" media="screen" /> 
     <link rel="alternate" type="application/rss+xml"  href="${config.siteurl}feed.xml" title="${config.sitename | h} RSS Feeds" />
     <link rel='index' title="${config.sitename}" href="${config.siteurl}" />
     
@@ -69,7 +69,7 @@
             class="cat-item"
           %endif    
           >  
-            <a href='${config.siteurl}index.${config.page_ext}'>Home</a>
+            <a href='${config.siteurl}/index.${config.page_ext}'>Home</a>
           </li>
           %for cat in categories:
             %if category != UNDEFINED and category.title == cat.title:
@@ -86,7 +86,7 @@
             class="cat-item"
           %endif    
           >  
-            <a href='${config.siteurl}members/your-name-here.${config.page_ext}'>About Me</a>
+            <a href='${config.siteurl}/members/your-name-here.${config.page_ext}'>About Me</a>
           </li>
         </ul>
       </div>

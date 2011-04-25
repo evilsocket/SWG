@@ -26,7 +26,7 @@ from swg.core.templatemanager import TemplateManager
 
 class Tag(Item):
   def __init__( self, title ):
-    Item.__init__( self, os.path.join( Config.getInstance().basepath, 'tags' ), title, Config.getInstance().page_ext )
+    Item.__init__( self, Config.getInstance().basepath + os.sep + 'tags', title, Config.getInstance().page_ext )
     self.title    = title
     self.items    = []
     self.template = TemplateManager.getInstance().get('tag.tpl')

@@ -10,7 +10,7 @@
 </url> 
 %for pagen in range( 2, pages[0].author.npages + 1 ):
 <url> 
-  <loc>${config.siteurl}index-${pagen}.${config.page_ext}</loc> 
+  <loc>${config.siteurl}/index-${pagen}.${config.page_ext}</loc> 
   <lastmod>${config.now.strftime("%Y-%m-%d")}</lastmod> 
   <changefreq>daily</changefreq> 
   <priority>1.0</priority> 
@@ -25,7 +25,7 @@
 </url> 
 %for pagen in range( 2, pages[0].author.npages + 1 ):
 <url> 
-  <loc>${config.siteurl}members/${pages[0].author.name}-${pagen}.${config.page_ext}</loc> 
+  <loc>${config.siteurl}/members/${pages[0].author.name}-${pagen}.${config.page_ext}</loc> 
   <lastmod>${config.now.strftime("%Y-%m-%d")}</lastmod> 
   <changefreq>daily</changefreq> 
   <priority>1.0</priority> 
@@ -41,7 +41,7 @@
 </url> 
 %for pagen in range( 2, category.npages + 1 ):
 <url> 
-  <loc>${config.siteurl}categories/${category.name}-${pagen}.${config.page_ext}</loc> 
+  <loc>${config.siteurl}/categories/${category.name}-${pagen}.${config.page_ext}</loc> 
   <lastmod>${config.now.strftime("%Y-%m-%d")}</lastmod> 
   <changefreq>daily</changefreq> 
   <priority>1.0</priority> 
@@ -58,7 +58,7 @@
 </url> 
 %for pagen in range( 2, tag.npages + 1 ):
 <url> 
-  <loc>${config.siteurl}tags/${tag.name}-${pagen}.${config.page_ext}</loc> 
+  <loc>${config.siteurl}/tags/${tag.name}-${pagen}.${config.page_ext}</loc> 
   <lastmod>${config.now.strftime("%Y-%m-%d")}</lastmod> 
   <changefreq>daily</changefreq> 
   <priority>1.0</priority> 

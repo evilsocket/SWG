@@ -46,7 +46,7 @@
       % elif pagen == 1:
         <a href='${config.siteurl}${category.url}'>${ pagen }</a>
       % else:
-        <a href='${config.siteurl}categories/${category.name}-${pagen}.${config.page_ext}'>${ pagen }</a>
+        <a href='${config.siteurl}/categories/${category.name}-${pagen}.${config.page_ext}'>${ pagen }</a>
       % endif
     % endfor
   </div>

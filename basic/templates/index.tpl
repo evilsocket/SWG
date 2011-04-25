@@ -41,9 +41,9 @@
       % if pagen == pager.getCurrentPageNumber():
         <b>${ pagen }</b>
       % elif pagen == 1:
-        <a href='${config.siteurl}index.${config.page_ext}'>${ pagen }</a>
+        <a href='${config.siteurl}/index.${config.page_ext}'>${ pagen }</a>
       % else:
-        <a href='${config.siteurl}index-${pagen}.${config.page_ext}'>${ pagen }</a>
+        <a href='${config.siteurl}/index-${pagen}.${config.page_ext}'>${ pagen }</a>
       % endif
     % endfor
     <div class="clear"></div>

@@ -69,7 +69,7 @@ class Config:
         if key == 'dbitem_ext':
           self.dbitem_ext = value
         elif key == 'siteurl':
-          self.siteurl = (value + '/') if value[ len(value) - 1 ] != '/' else value
+          self.siteurl = value 
         elif key == 'sitename':
           self.sitename = value
         elif key == 'charset':

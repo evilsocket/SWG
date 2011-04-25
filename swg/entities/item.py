@@ -35,11 +35,11 @@ class Item:
   )
 
   def __init__( self, path, title, extension ):
-    self.path        = path 
+    self.path        = path.replace( '//', '/' ) 
     self.title       = title
     self.extension   = extension
     self.name        = self.__generate_name()
-    self.url         = "%s/%s.%s" % (self.path,self.name,self.extension)
+    self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
     self.objects     = {}
     self.hash_id     = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
     self.digest      = ""

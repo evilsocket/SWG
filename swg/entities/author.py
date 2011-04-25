@@ -26,7 +26,7 @@ from swg.core.templatemanager import TemplateManager
 
 class Author(Item):
   def __init__( self, username ):
-    Item.__init__( self, os.path.join( Config.getInstance().basepath, 'members' ), username, Config.getInstance().page_ext )
+    Item.__init__( self, Config.getInstance().basepath + os.sep + 'members', username, Config.getInstance().page_ext )
     self.username = username
     self.items    = []
     self.avatar   = ""

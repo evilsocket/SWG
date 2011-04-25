@@ -56,7 +56,7 @@
       % elif pagen == 1:
         <a href='${config.siteurl}${author.url}'>${ pagen }</a>
       % else:
-        <a href='${config.siteurl}members/${author.name}-${pagen}.${config.page_ext}'>${ pagen }</a>
+        <a href='${config.siteurl}/members/${author.name}-${pagen}.${config.page_ext}'>${ pagen }</a>
       % endif
     % endfor
   </div>
