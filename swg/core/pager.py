@@ -18,8 +18,9 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from core.config import Config
 import math
+
+from swg.core.config import Config
 
 class Pager:
   def __init__( self, firstpage, format ):

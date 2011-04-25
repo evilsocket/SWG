@@ -19,9 +19,10 @@
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
-from entities.item        import Item
-from core.config          import Config
-from core.templatemanager import TemplateManager
+
+from swg.entities.item        import Item
+from swg.core.config          import Config
+from swg.core.templatemanager import TemplateManager
 
 class Page(Item):
   def __init__( self, title, template = None ):
@@ -33,38 +34,23 @@ class Page(Item):
     self.abstract   = ""
     self.content    = ""
     self.template   = TemplateManager.getInstance().get( 'page.tpl' if template is None else template )
-    self.custom     = {}
-
-  def setCustom( self, name, value ):
-    self.custom[name] = value
-
-    if self.author is not None:
-      self.author.setCustom( name, value )
-
-    for category in self.categories:
-      category.setCustom( name, value )
-
-    for tag in self.tags:
-      tag.setCustom( name, value )
-
-    return self
 
   def render( self ):
-    return TemplateManager.render( template = self.template, page = self, **self.custom )
+    return TemplateManager.render( template = self.template, page = self, **self.objects )
     
   def create( self ):
     Item.create(self)
 
     # create only authors not already done
-    if self.author != None and not os.path.exists( Config.getInstance().outputpath + "/" + self.author.url ):
+    if self.author != None and not os.path.exists( os.path.join( Config.getInstance().outputpath, self.author.url ) ):
       self.author.create()
 
     for category in self.categories:
       # create only categories not already done
-      if not os.path.exists( Config.getInstance().outputpath + "/" + category.url ):
+      if not os.path.exists( os.path.join( Config.getInstance().outputpath, category.url ) ):
         category.create()
 
     for tag in self.tags:
       # create only tags not already done
-      if not os.path.exists( Config.getInstance().outputpath + "/" + tag.url ):
+      if not os.path.exists( os.path.join( Config.getInstance().outputpath, tag.url ) ):
         tag.create()

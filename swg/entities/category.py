@@ -18,32 +18,24 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from entities.item        import Item
-from core.config          import Config
-from core.templatemanager import TemplateManager
+import os
 
-class Author(Item):
-  def __init__( self, username ):
-    Item.__init__( self, Config.getInstance().basepath + "/members", username, Config.getInstance().page_ext )
-    self.username = username
+from swg.entities.item        import Item
+from swg.core.config          import Config
+from swg.core.templatemanager import TemplateManager
+
+class Category(Item):
+  def __init__( self, title ):
+    Item.__init__( self, os.path.join( Config.getInstance().basepath, 'categories' ), title, Config.getInstance().page_ext )
+    self.title    = title
     self.items    = []
-    self.avatar   = ""
-    self.email    = ""
-    self.website  = ""
-    self.abstract = ""
-    self.content  = ""
-    self.template = TemplateManager.getInstance().get('author.tpl')
-    self.custom   = {}
+    self.children = []
+    self.template = TemplateManager.getInstance().get('category.tpl')
     self.sorted   = False
 
-  def setCustom( self, name, value ):
-    self.custom[name] = value
-    return self
-  
   def render( self ):
     if not self.sorted:
       self.items.sort( reverse=True, key=lambda item: item.datetime )
       self.sorted = True
 
-    return TemplateManager.render( template = self.template, author = self, **self.custom )
-
+    return TemplateManager.render( template = self.template, category = self, **self.objects )

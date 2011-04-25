@@ -19,29 +19,34 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from engine      import Engine
-from core.config import Config
-from optparse    import OptionParser
+from swg.engine      import Engine
+from swg.core.config import Config
+from optparse        import OptionParser
 
-oparser = OptionParser( usage = "usage: %prog <configuration file> (new)\n" )
+print "- SWG %s by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n" % Config.version
+
+oparser = OptionParser( usage = "usage: %prog <action>\n" )
+
+oparser.add_option( '-N', '--new',      action = 'store_const', const = 'new',      dest = 'action', help = 'Create a new item and open an editor to edit it.' )
+oparser.add_option( '-G', '--generate', action = 'store_const', const = 'generate', dest = 'action', help = 'Start website generation.' )
+oparser.add_option( '-S', '--serve',    action = 'store_const', const = 'serve',    dest = 'action', help = 'Generate website and test it on http://localhost:8080/' )
 
 (options, args) = oparser.parse_args()
 
-print "- SWG 1.2.3 by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com> -\n"
-
 try:
 
-  if len(args) < 1:
-    oparser.error( "No configuration file specified!" )
-  else:
-    configfile = args[0].strip()
-
-  Config.getInstance().load(configfile)
-  
-  if len(args) > 1 and args[1].lower() == 'new':
+  Config.getInstance().load('swg.cfg')
+ 
+  if options.action is None:
+    oparser.error( "No action specified, use --help to see a list of available actions." )
+  elif options.action == 'new':
     Engine().new()
-  else:
+  elif options.action == 'serve':
+    Engine().serve()
+  elif options.action == 'generate':
     Engine().generate()  
+  else:
+    oparser.error( "%s invalid action!" % options.action )
 
 except Exception as e:	
   raise

@@ -18,9 +18,10 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from entities.category import Category
-from core.config       import Config
 import codecs
+
+from swg.entities.category import Category
+from swg.core.config       import Config
 
 class CategoryManager:
   __instance = None

@@ -20,47 +20,42 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import datetime
 import codecs
+import os
 
 class Config:
   __instance = None;
 
+  version = '1.2.4'
+
   def __init__(self):
-    self.version    = "1.2.3"
+    self.now            = datetime.datetime.now()
     
-    self.now        = datetime.datetime.now()
-    
-    self.datapath   = "data"
+    self.editor         = 'vim'
+    self.datapath       = '.'
+    self.dbpath         = os.path.join( self.datapath, 'db' )
+    self.dbitem_ext     = "txt"
+    self.hierarchy      = os.path.join( self.dbpath, 'categories.' + self.dbitem_ext )
+    self.tplpath        = os.path.join( self.datapath, 'templates' )
+    self.tplcache       = os.path.join( self.datapath, 'cache' )
+    self.outputpath     = "output"
+    self.copypaths      = {}
 
-    self.dbpath     = self.datapath + "/db"
-    self.dbitem_ext = "txt"
-    self.hierarchy  = self.dbpath + "/categories." + self.dbitem_ext
+    self.siteurl        = ""
+    self.sitename       = "Generated with SWG " + self.version
+    self.charset        = "utf-8"
+    self.language       = "en"
+    self.keywords       = []
     
-    self.tplpath    = self.datapath + "/templates"
-    self.tplcache   = self.datapath + "/cache"
-
-    self.siteurl    = ""
-    self.sitename   = "Generated with SWG " + self.version
-    self.charset    = "utf-8"
-    self.language   = "en"
-    self.keywords   = []
-    
-    self.basepath       = ""
+    self.basepath       = '/'
     self.page_ext       = "html"
     self.pager          = False
     self.items_per_page = 10
 
-    self.editor = 'vim';
-
-    self.outputpath = "output"
-
-    self.gzip        = False
-    self.compression = 0
-
-    self.tidyfy     = False
-
-    self.copypaths  = {}
-
-    self.transfer   = None
+    self.gzip           = False
+    self.compression    = 0
+    self.tidyfy         = False
+    
+    self.transfer       = None
 
   def load( self, filename ):
     fd = codecs.open( filename, "r", "utf-8" )
@@ -71,20 +66,10 @@ class Config:
         (key,value) = line.split( '=', 1 )
         key   = key.strip()
         value = value.strip()
-        if key == 'datapath':
-          self.datapath = value
-        elif key == 'dbpath':
-          self.dbpath = value
-        elif key == 'dbitem_ext':
+        if key == 'dbitem_ext':
           self.dbitem_ext = value
-        elif key == 'hierarchy':
-          self.hierarchy = value
-        elif key == 'tplpath':
-          self.tplpath = value
-        elif key == 'tplcache':
-          self.tplcache = value
         elif key == 'siteurl':
-          self.siteurl = value
+          self.siteurl = (value + '/') if value[ len(value) - 1 ] != '/' else value
         elif key == 'sitename':
           self.sitename = value
         elif key == 'charset':
@@ -113,7 +98,7 @@ class Config:
           items = value.split(',')
           items = map( lambda s: s.strip(), items )
           for item in items:
-            self.copypaths[ self.datapath + '/' + item ] = self.outputpath + '/' + item
+            self.copypaths[ os.path.join( self.datapath, item ) ] = os.path.join( self.outputpath, item )
         elif key == 'keywords':
           items = value.split(',')
           self.keywords = map( lambda s: s.strip(), items )

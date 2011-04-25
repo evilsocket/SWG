@@ -24,13 +24,16 @@ import sys
 import os.path
 import re
 import shutil
+import SimpleHTTPServer
+import SocketServer
 
-from core.config      import Config
-from core.pageparser  import PageParser
-from entities.page    import Page
-from core.diffmanager import DiffManager
+from swg.core.config      import Config
+from swg.core.pageparser  import PageParser
+from swg.entities.page    import Page
+from swg.core.diffmanager import DiffManager
 
 class Engine:
+
   def __init__(self):
     self.config = Config.getInstance()
     self.dbdir  = os.path.join( self.config.dbpath, 'pages' )
@@ -46,8 +49,8 @@ class Engine:
     newitem = os.path.join( self.dbdir, "%d.%s" % (maxid + 1, self.config.dbitem_ext) )
     fd      = open( newitem, 'w+t' )
 
-    fd.write(
-"""Date: %s
+    fd.write( """\
+Date: %s
 Author:
 Categories:
 Tags:
@@ -65,7 +68,17 @@ Title:
       print "@ Item was not saved, quitting ."
 
   def serve( self ):
-    pass
+    self.config.siteurl = 'http://localhost:8080/'
+    self.generate()
+
+    os.chdir( self.config.outputpath )
+
+    print "\n@ Serving the site on http://localhost:8080/ press ctrl+c to exit ..."
+    
+    try:
+      SocketServer.TCPServer( ("",8080), SimpleHTTPServer.SimpleHTTPRequestHandler ).serve_forever()
+    except KeyboardInterrupt:
+      print "\n@ Bye :)"
 
   def generate( self ):
     parser = PageParser( )
@@ -100,31 +113,31 @@ Title:
 
     if os.path.exists( os.path.join( self.config.tplpath, 'index.tpl' ) ):
       print "@ Creating index file ..."
-      index = Page( 'index', 'index.tpl' ).setCustom( 'pages', pages )
+      index = Page( 'index', 'index.tpl' ).addObject( 'pages', pages )
       index.create()
     else:
       raise Exception( "No index template found." )
 
     if os.path.exists( os.path.join( self.config.tplpath, '404.tpl' ) ):
       print "@ Creating 404 file ..."
-      Page( '404', '404.tpl' ).setCustom( 'pages', pages ).create()
+      Page( '404', '404.tpl' ).addObject( 'pages', pages ).create()
 
     if os.path.exists( os.path.join( self.config.tplpath, 'feed.tpl' ) ):
       print "@ Creating feed.xml file ..."
       feed = Page( 'feed', 'feed.tpl' )
-      feed.setCustom( 'pages', pages )
+      feed.addObject( 'pages', pages )
       feed.extension = 'xml'
       feed.create()
 
     print "@ Rendering %d pages ..." % len(pages)
     for page in pages:
-      page.setCustom( 'pages', pages ).create()
+      page.addObject( 'pages', pages ).create()
 
     if os.path.exists( os.path.join( self.config.tplpath, 'sitemap.tpl' ) ):
       print "@ Creating sitemap.xml file ..."
       sitemap = Page( 'sitemap', 'sitemap.tpl' )
-      sitemap.setCustom( 'index', index )
-      sitemap.setCustom( 'pages', pages )
+      sitemap.addObject( 'index', index )
+      sitemap.addObject( 'pages', pages )
       sitemap.extension = 'xml'
       sitemap.create()
 

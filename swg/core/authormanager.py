@@ -18,31 +18,26 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from entities.tag import Tag
+import os
 
-class TagManager:
+from swg.core.authorparser import AuthorParser
+from swg.core.config       import Config
+
+class AuthorManager:
   __instance = None
 
   def __init__(self):
-    self.tags   = {}
-    self.sorted = []
+    self.authors = {}
 
-  def get( self, title = None ):
-    if title != None:
-      id = title.lower()
-      if not self.tags.has_key(id):
-        self.tags[id] = Tag(title)
+  def get( self, username ):
+    id = username.lower()
+    if not self.authors.has_key(id):
+      self.authors[id] = AuthorParser().parse( os.path.join( Config.getInstance().dbpath, ( "%s.%s" % (username,Config.getInstance().dbitem_ext) ) ) )
 
-      return self.tags[id]
-    else:
-      if self.sorted == []:
-        self.sorted = self.tags.values()
-        self.sorted.sort( reverse=True, key=lambda t: len(t.items) )
-
-      return self.sorted
+    return self.authors[id]
 
   @classmethod
   def getInstance(cls):
     if cls.__instance is None:
-      cls.__instance = TagManager()
+      cls.__instance = AuthorManager()
     return cls.__instance

@@ -18,11 +18,11 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from entities.page        import Page
-from itemparser           import ItemParser
-from core.authormanager   import AuthorManager
-from core.categorymanager import CategoryManager
-from core.tagmanager      import TagManager
+from swg.entities.page        import Page
+from swg.core.itemparser      import ItemParser
+from swg.core.authormanager   import AuthorManager
+from swg.core.categorymanager import CategoryManager
+from swg.core.tagmanager      import TagManager
 
 class PageParser(ItemParser):
   MANDATORY_FIELDS = {

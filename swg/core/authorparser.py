@@ -18,8 +18,8 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from itemparser      import ItemParser
-from entities.author import Author
+from swg.core.itemparser import ItemParser
+from swg.entities.author import Author
 
 class AuthorParser(ItemParser):
   MANDATORY_FIELDS = {

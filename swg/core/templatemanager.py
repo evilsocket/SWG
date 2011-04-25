@@ -18,10 +18,10 @@
 # program. If not, go to http://www.gnu.org/licenses/gpl.html
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from core.config          import Config
-from core.categorymanager import CategoryManager
-from core.tagmanager      import TagManager
-from mako.lookup          import TemplateLookup
+from mako.lookup     import TemplateLookup
+from swg.core.config import Config
+
+import swg
 
 class TemplateManager:
   __instance = None
@@ -45,8 +45,8 @@ class TemplateManager:
   @classmethod
   def render( cls, template, **kwargs ):
     return template.render( config     = Config.getInstance(),
-                            categories = CategoryManager.getInstance().get(),
-                            tags       = TagManager.getInstance().get(),
+                            categories = swg.core.categorymanager.CategoryManager.getInstance().get(),
+                            tags       = swg.core.tagmanager.TagManager.getInstance().get(),
                             **kwargs )
 
       

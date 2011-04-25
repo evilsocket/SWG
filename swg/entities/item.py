@@ -22,24 +22,25 @@ import re
 import os
 import hashlib
 
-from core.config      import Config
-from core.diffmanager import DiffManager
-from core.pager       import Pager
+from swg.core.config      import Config
+from swg.core.diffmanager import DiffManager
+from swg.core.pager       import Pager
 
 class Item:
   SLUGIFY_SPLIT_REGEXP  = re.compile( r'[^\w]+' )
   PAGER_ENABLED_CLASSES = (
-    'entities.category.Category',
-    'entities.tag.Tag',
-    'entities.author.Author'
+    'swg.entities.category.Category',
+    'swg.entities.tag.Tag',
+    'swg.entities.author.Author'
   )
 
   def __init__( self, path, title, extension ):
-    self.path        = path
+    self.path        = path 
     self.title       = title
     self.extension   = extension
     self.name        = self.__generate_name()
     self.url         = "%s/%s.%s" % (self.path,self.name,self.extension)
+    self.objects     = {}
     self.hash_id     = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
     self.digest      = ""
     self.npages      = 1
@@ -70,7 +71,22 @@ class Item:
     fd = open( filename.encode('UTF-8'), "w+b" )
     fd.write( contents )
     fd.close()
-   
+  
+  def addObject( self, name, value ):
+    self.objects[name] = value
+    
+    if hasattr( self, 'author') and self.author is not None:
+      self.author.addObject( name, value )
+    
+    if hasattr( self, 'categories' ):
+      for category in self.categories:
+        category.addObject( name, value )
+    
+    if hasattr( self, 'tags' ):
+      for tag in self.tags:
+        tag.addObject( name, value )
+
+    return self
 
   def create(self):  
     config = Config.getInstance()
@@ -79,18 +95,20 @@ class Item:
     if not os.path.exists( path ):
       os.mkdir(path)
 
-    if config.pager == True and self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES:     
-      self.custom['pager'] = Pager( '%s.%s'     % (self.name, self.extension),
-                                    '%s-%%d.%s' % (self.name, self.extension) )
-                                    
+    if config.pager == True and (self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES):     
+      pager = Pager( '%s.%s'     % ( self.name, self.extension ),
+                     '%s-%%d.%s' % ( self.name, self.extension ) )
+      
       if hasattr( self, 'items' ):
-        self.custom['pager'].setPages( self.items )
+        pager.setPages( self.items )
       else:
-        self.custom['pager'].setPages( self.custom['pages'] )
+        pager.setPages( self.objects['pages'] )
 
-      self.npages = self.custom['pager'].getTotalPages()
-     
-      for filename in self.custom['pager']:
+      self.npages = pager.getTotalPages()
+
+      self.addObject( 'pager', pager )
+
+      for filename in pager:
         filename = os.path.join( path, filename )
         content  = self.render()
 

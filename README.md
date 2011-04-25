@@ -9,6 +9,18 @@ have both performances and "WEB 2.0" contents and capabilities.
 Given a set of files, one for each page/article, one for each author and one for the categories hyerarchy, SWG will read the configuration file
 you specify from command line and generate a complete static website, with tags and categories indexing.
 
+### Generate your website
+
+Once you are in the directory containing your website definition (with a swg.cfg file in it), just run:
+
+    swg --generate
+
+To start website generation, other options are available, use
+
+    swg --help
+
+To a display the complete list.
+
 ### Importing from another platform
 
 Right now, in the 'importers' directory of the project, there's a script to convert a WordPress XML backup file to the
@@ -47,18 +59,8 @@ your own description inside 'example-site.com/db/your-nickname.txt' and make the
 
 ### An example configuration file
 
-    # Path of the db, templates and so on
-    datapath   = example-site.com
-    # Path of the db
-    dbpath     = example-site.com/db
     # DB files extension
     dbitem_ext = txt
-    # Category hierarchy file
-    hierarchy  = example-site.com/db/categories.txt
-    # Templates path
-    tplpath    = example-site.com/templates
-    # Template cache path
-    tplcache   = example-site.com/cache
     # URL of the site you are going to generate
     siteurl    = http://www.example-site.com
     # Site name / description
@@ -91,6 +93,15 @@ your own description inside 'example-site.com/db/your-nickname.txt' and make the
     tidyfy = true
 
 Pretty self explanatory isn't it ? :)
+
+### Testing your website locally
+
+From version 1.2.4, SWG offers the possibility to test your website locally, once you are in the directory containing your website definition 
+(with a swg.cfg file in it), run the following command:
+
+    swg --serve
+
+This will start the website generation and a test webserver on http://localhost:8080/ .
 
 ### Example project
 
