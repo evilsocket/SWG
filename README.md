@@ -1,7 +1,10 @@
-###  SWG - Static Website Generator
+SWG - Static Website Generator
+==============================
+
 Copyleft by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com>
 
-### What is SWG ?
+What is SWG ?
+-------------
 
 SWG is a new generation static website generator, featured by the Mako (http://www.makotemplates.org/) template system, born from the need to
 have both performances and "WEB 2.0" contents and capabilities.
@@ -9,14 +12,28 @@ have both performances and "WEB 2.0" contents and capabilities.
 Given a set of files, one for each page/article, one for each author and one for the categories hyerarchy, SWG will read the configuration file
 you specify from command line and generate a complete static website, with tags and categories indexing.
 
-### Create a new website
+Installation
+------------
+
+To get the latest released version:
+
+::
+
+    pip install swg
+
+Create a new website
+--------------------
 
 To start a new website, type:
+
+::
 
     swg --create website-folder-name
 
 An example site with a basic structure will be created inside the 'website-folder-name' directory.
 Then you can type:
+
+::
 
     cd website-folder-name
     swg --serve
@@ -24,22 +41,30 @@ Then you can type:
 To test the website locally.
 The first article is about customization and basic configuration, so read it carefully.
 
-### Generate your website
+Generate your website
+---------------------
 
 Once you are in the directory containing your website definition (with a swg.cfg file in it), just run:
+
+::
 
     swg --generate
 
 To start website generation, other options are available, use
 
+::
+
     swg --help
 
 To a display the complete list.
 
-### Importing from another platform
+Importing from another platform
+-------------------------------
 
 Right now, in the 'importers' directory of the project, there's a script to convert a WordPress XML backup file to the
 SWG format, to use it consider the following:
+
+::
 
     python wordpress.py --help
     - SWG Wordpress Backup Importer -
@@ -66,13 +91,18 @@ So let's say for instance, that you have your wp.xml file and you want to export
 images referenced by the articles into the 'example-site.com/images' directory (the import will replace properly image urls), you
 will use the command line:
 
+::
+
     python wordpress.py -i wp.xml -u http://www.example-site.com -o 'example-site.com' -I 'example-site.com/images'
 
 And it's all done!
 Now you just have to create the templates, fix the categories hyerarchy inside the file 'example-site.com/db/categories.txt', customize
 your own description inside 'example-site.com/db/your-nickname.txt' and make the configuration file following the example below.
 
-### An example configuration file
+An example configuration file
+-----------------------------
+
+::
 
     # DB files extension
     dbitem_ext = txt
@@ -109,16 +139,20 @@ your own description inside 'example-site.com/db/your-nickname.txt' and make the
 
 Pretty self explanatory isn't it ? :)
 
-### Testing your website locally
+Testing your website locally
+----------------------------
 
 From version 1.2.4, SWG offers the possibility to test your website locally, once you are in the directory containing your website definition 
 (with a swg.cfg file in it), run the following command:
+
+::
 
     swg --serve
 
 This will start the website generation and a test webserver on http://localhost:8080/ .
 
-### Example project
+Example project
+---------------
 
 For an example site, look at my personal blog github repo located here https://github.com/evilsocket/evilsocket.net
 

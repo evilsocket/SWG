@@ -38,7 +38,7 @@ class Engine:
     self.config = Config.getInstance()
     self.dbdir  = os.path.join( self.config.dbpath, 'pages' )
     self.files  = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
-    self.path   = os.path.dirname( os.path.realpath( __file__ + os.sep + '..' ) )
+    self.path   = os.path.dirname( os.path.realpath( __file__ ) )
 
   def new( self ):
     maxid = 0

@@ -1,0 +1,6 @@
+exclude *.pyc .DS_Store .gitignore MANIFEST.in
+include setup.py
+include distribute_setup.py
+recursive-include swg *.py
+recursive-include swg/basic *.*
+recursive-include swg/importers *.*
