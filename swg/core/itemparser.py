@@ -19,7 +19,7 @@
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import codecs
-from dateutil import parser as datetime_parser
+import time
 
 from swg.core.config import Config
 
@@ -66,7 +66,7 @@ class ItemParser:
     self.lineno   = 1
 
   def __parse_datetime( self, data ):
-    return datetime_parser.parse(data)
+    return time.strptime( data, '%Y-%m-%d %H:%M:%S' )
 
   def __parse_string( self, data ):
     return data.strip()
