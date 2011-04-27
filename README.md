@@ -1,7 +1,9 @@
 SWG - Static Website Generator
 ==============================
 
-Copyleft by Simone 'evilsocket' Margaritelli <evilsocket@gmail.com>
+Copyleft by Simone Margaritelli <evilsocket@gmail.com>
+http://www.evilsocket.net/
+http://www.github.com/evilsocket
 
 What is SWG ?
 -------------
