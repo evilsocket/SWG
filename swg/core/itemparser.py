@@ -23,6 +23,14 @@ import time
 
 from swg.core.config import Config
 
+# Class to easily format time stamps
+class ItemDate:
+  def __init__( self, stime ):
+    self.stime = stime
+  
+  def strftime( self, format ):
+    return time.strftime( format, self.stime )
+
 class ItemParser:
   PARSE_NONE_STATE = 0
   PARSE_INFO_STATE = 1
@@ -66,7 +74,7 @@ class ItemParser:
     self.lineno   = 1
 
   def __parse_datetime( self, data ):
-    return time.strptime( data, '%Y-%m-%d %H:%M:%S' )
+    return ItemDate( time.strptime( data, '%Y-%m-%d %H:%M:%S' ) )
 
   def __parse_string( self, data ):
     return data.strip()
