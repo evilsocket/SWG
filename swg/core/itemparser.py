@@ -19,17 +19,9 @@
 # or write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import codecs
-import time
+import datetime 
 
 from swg.core.config import Config
-
-# Class to easily format time stamps
-class ItemDate:
-  def __init__( self, stime ):
-    self.stime = stime
-  
-  def strftime( self, format ):
-    return time.strftime( format, self.stime )
 
 class ItemParser:
   PARSE_NONE_STATE = 0
@@ -74,7 +66,7 @@ class ItemParser:
     self.lineno   = 1
 
   def __parse_datetime( self, data ):
-    return ItemDate( time.strptime( data, '%Y-%m-%d %H:%M:%S' ) )
+    return datetime.datetime.strptime( data, '%Y-%m-%d %H:%M:%S' )
 
   def __parse_string( self, data ):
     return data.strip()
