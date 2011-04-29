@@ -25,7 +25,7 @@ import os
 class Config:
   __instance = None;
 
-  version = '1.2.6'
+  version = '1.2.7'
 
   def __init__(self):
     self.now            = datetime.datetime.now()
@@ -95,13 +95,11 @@ class Config:
         elif key == 'items_per_page':
           self.items_per_page = int(value)
         elif key == 'copypaths':
-          items = value.split(',')
-          items = map( lambda s: s.strip(), items )
+          items = [ s.strip() for s in value.split(',') ]
           for item in items:
             self.copypaths[ os.path.join( self.datapath, item ) ] = os.path.join( self.outputpath, item )
         elif key == 'keywords':
-          items = value.split(',')
-          self.keywords = map( lambda s: s.strip(), items )
+          self.keywords = [ s.strip() for s in value.split(',') ]
         elif key == 'transfer':
           self.transfer = value
         else:

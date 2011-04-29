@@ -33,12 +33,33 @@ from swg.entities.page    import Page
 from swg.core.diffmanager import DiffManager
 
 class Engine:
+  __instance = None
 
   def __init__(self):
-    self.config = Config.getInstance()
-    self.dbdir  = os.path.join( self.config.dbpath, 'pages' )
-    self.files  = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
-    self.path   = os.path.dirname( os.path.realpath( __file__ ) )
+    self.config  = Config.getInstance()
+    self.dbdir   = os.path.join( self.config.dbpath, 'pages' )
+    self.files   = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
+    self.path    = os.path.dirname( os.path.realpath( __file__ ) )
+    self.pages   = []
+    self.statics = None
+    self.index   = None
+    self.e404    = None
+    self.sitemap = None
+    self.feed    = None
+
+  def getPageByTitle( self, title, caseSensitive = True ):
+    lwr_title = title.lower() if caseSensitive is False else None
+    for page in self.pages:
+      if page.title == title or (caseSensitive is False and page.title.lower() == lwr_title):
+        return page
+
+    return None
+
+  def getStaticPages( self ):
+    if self.statics is None:
+      self.statics = filter( lambda page: page.static is True, self.pages )
+
+    return self.statics
 
   def new( self ):
     maxid = 0
@@ -108,17 +129,16 @@ To test the website locally.""" % (destfolder,destfolder)
 
   def generate( self ):
     parser = PageParser( )
-    pages  = []
-
+    
     print "@ Parsing pages ..."
     for file in self.files:
       if re.match( '^.+\.' + self.config.dbitem_ext + '$', file ):
         filename = os.path.join( self.dbdir, file )
         page     = parser.parse( filename )
-        pages.append(page)
+        self.pages.append(page)
 
     print "@ Sorting pages by date ..."
-    pages.sort( reverse=True, key=lambda p: p.datetime )
+    self.pages.sort( reverse=True, key=lambda p: p.datetime )
 
     # delete output directory and recreate it
     if os.path.exists(self.config.outputpath ):
@@ -139,33 +159,35 @@ To test the website locally.""" % (destfolder,destfolder)
 
     if os.path.exists( os.path.join( self.config.tplpath, 'index.tpl' ) ):
       print "@ Creating index file ..."
-      index = Page( 'index', 'index.tpl' ).addObject( 'pages', pages )
-      index.create()
+      self.index = Page( 'index', 'index.tpl' )
+      self.index.addObjects( { 'pages' : self.pages, 'swg' : self } )
+      self.index.create()
     else:
       raise Exception( "No index template found." )
 
     if os.path.exists( os.path.join( self.config.tplpath, '404.tpl' ) ):
       print "@ Creating 404 file ..."
-      Page( '404', '404.tpl' ).addObject( 'pages', pages ).create()
+      self.e404 = Page( '404', '404.tpl' )
+      self.e404.addObjects( { 'pages' : self.pages, 'swg' : self } )
+      self.e404.create()
 
     if os.path.exists( os.path.join( self.config.tplpath, 'feed.tpl' ) ):
       print "@ Creating feed.xml file ..."
-      feed = Page( 'feed', 'feed.tpl' )
-      feed.addObject( 'pages', pages )
-      feed.extension = 'xml'
-      feed.create()
+      self.feed = Page( 'feed', 'feed.tpl' )
+      self.feed.addObjects( { 'pages' : self.pages, 'swg' : self } )
+      self.feed.extension = 'xml'
+      self.feed.create()
 
-    print "@ Rendering %d pages ..." % len(pages)
-    for page in pages:
-      page.addObject( 'pages', pages ).create()
+    print "@ Rendering %d pages ..." % len(self.pages)
+    for page in self.pages:
+      page.addObjects( { 'pages' : self.pages, 'swg' : self } ).create()
 
     if os.path.exists( os.path.join( self.config.tplpath, 'sitemap.tpl' ) ):
       print "@ Creating sitemap.xml file ..."
-      sitemap = Page( 'sitemap', 'sitemap.tpl' )
-      sitemap.addObject( 'index', index )
-      sitemap.addObject( 'pages', pages )
-      sitemap.extension = 'xml'
-      sitemap.create()
+      self.sitemap = Page( 'sitemap', 'sitemap.tpl' )
+      self.sitemap.addObjects( { 'index' : self.index, 'pages' : self.pages, 'swg' : self } )
+      self.sitemap.extension = 'xml'
+      self.sitemap.create()
 
     if self.config.gzip is True:
       htaccess = os.path.join( self.config.outputpath, '.htaccess' ) 
@@ -216,3 +238,8 @@ To test the website locally.""" % (destfolder,destfolder)
         ( digest, status ) = info
         print "@ %-8s : '%s'" % ( status, filename.encode( "UTF-8" ) )
 
+  @classmethod
+  def getInstance(cls):
+    if cls.__instance is None:
+      cls.__instance = Engine()
+    return cls.__instance

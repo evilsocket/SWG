@@ -1,53 +1,35 @@
 # -*- coding: utf-8 -*-
 <div id="sidebar">
   <ul id="sidelist">
-	  <li id="pages-3" class="widget widget_pages"><h2 class="widgettitle">Pages</h2>
-	    <ul>
-          <li
-          %if page != UNDEFINED and page.title == 'index':
-            class="cat-item current-cat"  
-          %else:
-            class="cat-item"
-          %endif    
-          >  
-            <a href='${config.siteurl}/index.${config.page_ext}'>Home</a>
-          </li>
-
-			              <li
-          %if author != UNDEFINED:
-            class="cat-item current-cat"  
-          %else:
-            class="cat-item"
-          %endif    
-          >  
-            <a href='${config.siteurl}/members/your-name-here.${config.page_ext}'>About Me</a>
-          </li>
-		  </ul>
-		</li>
+    <li id="pages-3" class="widget widget_pages"><h2 class="widgettitle">Pages</h2>
+      <ul>
+        <li class="cat-item"><a href='${config.siteurl}/index.${config.page_ext}'>Home</a></li>
+        %for static in swg.getStaticPages():
+          <li class="cat-item"><a href="${config.siteurl}${static.url}" title="${static.title | h}">${static.title | h}</a></li>
+        %endfor
+        <li class="cat-item"><a href='${config.siteurl}/members/your-name-here.${config.page_ext}'>About Me</a></li>
+      </ul>
+    </li>
 
     <li id="categories-2" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>
-		  <ul>
+	<ul>
         %for cat in categories:
-          %if category != UNDEFINED and category.title == cat.title:
-            <li class="cat-item current-cat"><a href="${config.siteurl}${cat.url}" title="View category ${cat.title | h} archive">${cat.title | h}</a></li> 
-          %else:
-            <li class="cat-item"><a href="${config.siteurl}${cat.url}" title="View category ${cat.title | h} archive">${cat.title | h}</a></li> 
-          %endif
+          <li class="cat-item"><a href="${config.siteurl}${cat.url}" title="View category ${cat.title | h} archive">${cat.title | h}</a></li> 
         %endfor	      
-		  </ul>
+	</ul>
     </li>
 
     <li id="linkcat-2" class="widget widget_links"><h2 class="widgettitle">Blogroll</h2>
-	    <ul class='xoxo blogroll'>
+      <ul class='blogroll'>
         <li><a href="#">Example Link</a></li>
         <li><a href="#">Example Link</a></li>
         <li><a href="#">Example Link</a></li>
         <li><a href="#">Example Link</a></li>
-	    </ul>
+      </ul>
     </li>
 
-		<div id="tag_cloud" class="widget">
-		<h2>Tag Cloud</h2>
+    <div id="tag_cloud" class="widget">
+      <h2>Tag Cloud</h2>
       <%
         import math
         import random
@@ -63,7 +45,9 @@
       % for tag in randomized:
         <%
           current = len( tag.items )
-          weight  = ( math.log(current) - math.log(minOccurs) ) / ( math.log(maxOccurs) - math.log(minOccurs) );
+          a       = math.log(current) - math.log(minOccurs)
+          b       = math.log(maxOccurs) - math.log(minOccurs)
+          weight  = (a / b) if b != 0 else a
           size    = minFontSize + round( ( maxFontSize - minFontSize ) * weight );
         %>
         <a href="${config.siteurl}${tag.url}" title="${len(tag.items)} argomenti" style="font-size: ${size}px">${tag.title | h}</a>         

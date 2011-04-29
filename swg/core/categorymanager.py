@@ -78,8 +78,7 @@ class CategoryManager:
         if ':' in line:
           ( root, children ) = line.split( ':', 1 )
           root     = root.strip()
-          children = children.strip().split(',')
-          children = map( lambda s: s.strip(), children )
+          children = [ s.strip() for s in children.strip().split(',') ]
         else:
           root     = line
           children = []

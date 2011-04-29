@@ -1,0 +1,150 @@
+Date: 2011-04-25 17:34:00
+Static: true
+Author: Your Name Here
+Categories: Personal, Experience
+Tags: swg, test, post, basic, website, structure, instructions, howto, doc, documentation
+Title: Instructions
+
+<p align="justify">
+
+<break>
+
+<ul>
+  <li><a href="#intro0">Changing website main properties</a></li>
+  <li><a href="#intro1">Setting up your author name</a></li>
+  <li><a href="#intro2">Defining site categories</a></li>
+  <li><a href="#intro3">Customizing the templates</a></li>
+  <li><a href="#intro4">Creating a new article</a></li>
+  <li><a href="#intro5">Add comment capabilities to each article</a></li>
+  <li><a href="#final"><b>!!! Final Note !!!</b></a></li>
+</ul>
+
+<h2><a name="intro0">Changing website main properties</a></h2>
+You can change those properties by editing the <b>swg.cfg</b> file inside the folder of the site project, the main properties you are probably
+interested in are:
+
+<pre>
+siteurl    = http://www.swg-example-website.com
+sitename   = SWG Example Website
+charset    = utf-8
+language   = en
+keywords   = swg,example,website,static,static website,generator,static website generator
+</pre>
+
+Where siteurl is the url of your website, sitename the name displayed in the header, then you can define the html charset and language and finally the
+keywords to be used in the meta html fields.
+
+<h2><a name="intro1">Setting up your author name</a></h2>
+The first thing you wanna do, is to change the main author name, because as you have noticed it's set to '<b>Your Name Here</b>' right now ... pretty ugly isn't it?
+
+Open the file <b>db/Your Name Here.txt</b> with your favourite text editor (better if it supports HTML syntax highlighting) and edit the first four rows with your
+own details, for instance:
+
+<pre>
+username: Joe Black
+avatar: /images/myavatar.png
+email: joeblack@gmail.com
+website: http://www.example-website.com
+</pre>
+
+Leave the next line empty and write something about yourself (HTML allowed), this description will be the one displayed in the <b>About Me</b> section.
+Now <b>rename</b> the file with the username you've just used in those fields, so it will be renamed (following the example) like so:
+
+<pre>
+db/Your Name Here.txt  ---> renamed to ---> db/Joe Black.txt
+</pre>
+
+Also you will have to replace the string <b>your-name-here</b> with <b>joe-black</b> inside <b>templates/sidebar.tpl</b> and <b>templates/header.tpl</b> to fix
+the links to your profile.
+
+<h2><a name="intro2">Defining site categories</a></h2>
+To define the hierarchy of your categories, open the file <b>db/categories.txt</b> and edit it.
+Each line must begin with one root category, so for instance:
+
+<pre>
+Personal
+Experience
+</pre>
+
+Are two root categories.
+To add a new one, simply add a new line with the name of the new category.
+
+If you want to define a <b>sub category</b>, you shall use the following syntax:
+
+<pre>
+Personal: Projects, Work
+Experience
+</pre>
+
+So that <b>Projects</b> and <b>Work</b> are now sub categories of <b>Personal</b>.
+
+<h2><a name="intro3">Customizing the templates</a></h2>
+SWG uses the <a href="http://www.makotemplates.org/" target="_blank">Mako Template Engine</a> to render the html contents, so you might want to follow its 
+<a href="http://www.makotemplates.org/docs/" target="_blank">documentation</a> to fully understand how to customize the tpl files inside the <b>templates</b> 
+directory.  
+
+Anyway, if you just want to edit the html, reading the Mako documentation is not needed, you can edit the templates just as normal html files :)
+
+<h2><a name="intro4">Creating a new article</a></h2>
+Once you are in your website SWG folder, you can use the command:
+
+<pre>
+swg --new
+</pre>
+
+or
+
+<pre>
+swg -N
+</pre>
+
+To create a new entry.
+The editor you've configured in your swg.cfg file will then be available to edit the new entry and you will have to fill the first lines:
+
+<pre>
+Date: 2011-04-25 17:34:00
+Author: Joe Black
+Categories: Personal, Experience
+Tags: put, some, comma, separated, tag, here
+Title: Hello World again, put the title here.
+</pre>
+
+Leave the following line blank and start inserting the content.
+If you want to split the abstract of the article and the body itself, you can use the optional <b>&lt;break&gt;</b> tag, for instance:
+
+<pre>
+Date: 2011-04-25 17:34:00
+Author: Joe Black
+Categories: Personal, Experience
+Tags: put, some, comma, separated, tag, here
+Title: Hello World again, put the title here.
+
+&lt;p&gt;
+  This is the abstract.
+  <b>&lt;break&gt;</b>
+  And this is the rest of the article that will be shown only in the article page itself.
+&lt;/p&gt;
+</pre>
+
+<h2><a name="intro5">Add comment capabilities to each article</a></h2>
+You can easily add a comment feature to each article using the <a href="http://disqus.com/" target="_blank">DISQUS</a> free service,
+just register your website and edit the file <b>templates/page.tpl</b> adding the DISQUS javascript code where you want the comments
+to be shown.
+
+<h2><a name="final">Final Note</a></h2>
+After <b>every</b> modification to the site, do not forget to regenerate it with the:
+
+<pre>
+swg --generate
+</pre>
+
+command executed inside the website folder, or, to test it locally:
+
+<pre>
+swg --serve
+</pre>
+
+Then you will be able to browse it at the address <em>http://localhost:8080</em> .
+
+</p>
+

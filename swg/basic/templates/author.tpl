@@ -13,7 +13,7 @@
   <br/>
   <h3 class="entrytitle">I wrote ${len(author.items)} articles:</h3>
   <br/>
-  % for page in pager.getCurrentPages():
+  % for page in pager.getCurrentPages( includeStatic = True ):
   <div class="post post-index" id="post" >
     <h2 class="entry-title index-entry-title"><a href="${config.siteurl}${page.url}" title="${page.title | h}">${page.title | h}</a> </h2>        
                     

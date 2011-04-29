@@ -36,8 +36,8 @@ class Item:
 
   def __init__( self, path, title, extension ):
     self.path        = path.replace( '//', '/' ) 
-    self.title       = title
-    self.extension   = extension
+    self.title       = title.strip()
+    self.extension   = extension.strip()
     self.name        = self.__generate_name()
     self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
     self.objects     = {}
@@ -49,11 +49,11 @@ class Item:
     self.gzip_allow  = re.compile( '^.+\.' + Config.getInstance().page_ext + '$', re.IGNORECASE )
 
   def __generate_name( self ):
-      result = []
-      for word in Item.SLUGIFY_SPLIT_REGEXP.split( self.title.lower() ):
-          result.extend( word.split() )
+    result = []
+    for word in Item.SLUGIFY_SPLIT_REGEXP.split( self.title.lower() ):
+      result.extend( word.split() )
 
-      return '-'.join(result)
+    return '-'.join(result)
 
   def __save_contents( self, filename, contents ):
     if self.gzip is True and self.gzip_allow.match( filename ):
@@ -86,6 +86,12 @@ class Item:
       for tag in self.tags:
         tag.addObject( name, value )
 
+    return self
+
+  def addObjects( self, dictionary ):
+    for name, value in dictionary.items():
+      self.addObject( name, value )
+  
     return self
 
   def create(self):  

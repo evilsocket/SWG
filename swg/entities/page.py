@@ -33,6 +33,7 @@ class Page(Item):
     self.tags       = []
     self.abstract   = ""
     self.content    = ""
+    self.static     = False
     self.template   = TemplateManager.getInstance().get( 'page.tpl' if template is None else template )
 
   def render( self ):

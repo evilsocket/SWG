@@ -36,7 +36,7 @@ class Pager:
 
   def setPages( self, pages ):
     self.pages = pages
-    self.max   = len(pages)
+    self.max   = len(pages) 
     self.left  = self.max
     self.total = math.ceil( self.max / self.config.items_per_page )
     self.total += 1 if self.max % self.config.items_per_page != 0 else 0
@@ -51,17 +51,32 @@ class Pager:
   def getTotalPages(self):
     return self.total
 
-  def getCurrentPages(self):
-    begin = (self.pagen - 1) * self.config.items_per_page
-    end   = (begin + self.config.items_per_page) if self.left > self.config.items_per_page else (begin + self.left)
-    return self.pages[begin:end]
+  def getCurrentPages( self, includeStatic = False ):
+    begin  = (self.pagen - 1) * self.config.items_per_page
+    number = min( self.config.items_per_page, self.left )
+    end    = begin + number
+
+    if includeStatic:
+      return self.pages[begin:end]
+    else:
+      done    = 0
+      current = []
+        
+      for page in self.pages[begin:]:
+        if page.static is False:
+          current.append(page)
+          done += 1
+          if done >= number:
+            break
+
+      return current
 
   def goToNext(self):
     self.left = self.max - self.current
     if self.left <= 0:
       return False
     else:
-      self.current += self.config.items_per_page if self.left > self.config.items_per_page else self.left
+      self.current += min( self.config.items_per_page, self.left )
       return True
 
   def __iter__(self):

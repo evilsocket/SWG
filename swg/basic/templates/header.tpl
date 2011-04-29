@@ -71,6 +71,7 @@
           >  
             <a href='${config.siteurl}/index.${config.page_ext}'>Home</a>
           </li>
+
           %for cat in categories:
             %if category != UNDEFINED and category.title == cat.title:
               <li class="cat-item current-cat"><a href="${config.siteurl}${cat.url}" title="View category ${cat.title | h} archive">${cat.title | h}</a></li> 
@@ -88,6 +89,17 @@
           >  
             <a href='${config.siteurl}/members/your-name-here.${config.page_ext}'>About Me</a>
           </li>
+
+          <li
+          %if page != UNDEFINED and page.title == 'Instructions':
+            class="cat-item current-cat"  
+          %else:
+            class="cat-item"
+          %endif    
+          >  
+            <a href='${config.siteurl}${swg.getPageByTitle('Instructions').url}'>Instructions</a>
+          </li>
+
         </ul>
       </div>
       

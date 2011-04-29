@@ -32,14 +32,21 @@ class PageParser(ItemParser):
     'tags'       : 'array',
     'title'      : 'string'
   }
+
+  OPTIONAL_FIELDS = {
+    'static' : 'boolean'  
+  }
   
   def __init__(self):
     ItemParser.__init__(self)
         
   def parse( self, filename ):
-    ItemParser.parse( self, PageParser.MANDATORY_FIELDS, filename )
+    ItemParser.parse( self, PageParser.MANDATORY_FIELDS, filename, PageParser.OPTIONAL_FIELDS )
 
     page = Page( self.info['title'] )
+
+    if 'static' in self.info:
+      page.static = self.info['static']
 
     author = AuthorManager.getInstance().get( self.info['author'] )
     author.items.append(page)

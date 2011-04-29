@@ -69,14 +69,15 @@ class ItemParser:
     return datetime.datetime.strptime( data, '%Y-%m-%d %H:%M:%S' )
 
   def __parse_string( self, data ):
-    return data.strip()
+    return data
 
   def __parse_array( self, data ):
-    data  = data.strip()
-    items = data.split(',')
-    return map( lambda s: s.strip(), items )
+    return [ s.strip() for s in data.split(',') ] 
+    
+  def __parse_boolean( self, data ):
+    return True if data.lower() == 'true' else False
 
-  def parse( self, mandatory_fields_map, filename ):
+  def parse( self, mandatory_fields_map, filename, optional_fields_map = None ):
     fd = codecs.open( filename, "r", "utf-8" )
 
     self.state = ItemParser.PARSE_INFO_STATE
@@ -90,19 +91,25 @@ class ItemParser:
           ( info_id, info_data ) = line.split( ':', 1 )
           info_id   = info_id.strip().lower()
           info_data = info_data.strip()
+          info_type = None
 
-          if mandatory_fields_map.has_key(info_id):
-            type = mandatory_fields_map[info_id]
-            if type == 'datetime':
-              self.info[info_id] = self.__parse_datetime(info_data)
-            elif type == 'string':
-              self.info[info_id] = self.__parse_string(info_data)
-            elif type == 'array':
-              self.info[info_id] = self.__parse_array(info_data)
+          try:
+            info_type = mandatory_fields_map[info_id]  
+          except KeyError:
+            try:
+              info_type = optional_fields_map[info_id]
+            except:
+              raise Exception( "Unknown key %s on line %d." % ( info_id, self.lineno ) )
 
-          else:
-            raise Exception( "Unknown key %s on line %d." % ( info_id, self.lineno ) )
-
+          if info_type == 'datetime':
+            self.info[info_id] = self.__parse_datetime(info_data)
+          elif info_type == 'string':
+            self.info[info_id] = self.__parse_string(info_data)
+          elif info_type == 'array':
+            self.info[info_id] = self.__parse_array(info_data)
+          elif info_type == 'boolean':
+            self.info[info_id] = self.__parse_boolean(info_data) 
+          
       elif self.state == ItemParser.PARSE_BODY_STATE:
         self.body += line
       else:

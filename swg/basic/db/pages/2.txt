@@ -1,0 +1,11 @@
+Date: 2011-04-24 17:34:00
+Author: Your Name Here
+Categories: Personal, Experience
+Tags: swg, test, post, basic, website, structure
+Title: Worth A Thousand Words
+
+<p align="justify">
+<img src='/images/boat.jpg'/>
+</p>
+
+

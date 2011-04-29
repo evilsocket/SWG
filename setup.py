@@ -12,7 +12,7 @@ def find_package_data( where               = '.',
                        exclude             = ( '*.pyc', '*~', '*.bak', '*.swp*', '.*'),
                        exclude_directories = ('.*', 'CVS', '_darcs', './build', './dist', 'EGG-INFO', '*.egg-info'),
                        only_in_packages    = True,
-                       show_ignored        = False):
+                       show_ignored        = False ):
 
   out = {}
   stack = [(convert_path(where), '', package, only_in_packages)]
@@ -68,8 +68,9 @@ setup( name                 = 'swg',
        packages             = find_packages(),
        include_package_data = True,
        package_data         = find_package_data( package = 'swg', only_in_packages = False ),
-       install_requires     = ( 'mako >= 0.4.1', 'pytidylib >= 0.2.1' ),
-       scripts              = [ 'swg/swg' ],
+       install_requires     = ( 'mako >= 0.4.1', 'utidylib' ),
+       dependency_links     = [ 'http://cctools.svn.sourceforge.net/svnroot/cctools/vendorlibs/utidylib/#egg=utidylib-0.2-cvs' ],
+       scripts              = [ 'swg/swg', 'swg/swg-wordpress' ],
        license              = 'GPL',
        zip_safe             = False,
        classifiers          = [

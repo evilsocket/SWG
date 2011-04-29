@@ -2,8 +2,6 @@ SWG - Static Website Generator
 ==============================
 
 Copyleft by Simone Margaritelli <evilsocket@gmail.com>
-http://www.evilsocket.net/
-http://www.github.com/evilsocket
 
 What is SWG ?
 -------------
@@ -63,15 +61,15 @@ To a display the complete list.
 Importing from another platform
 -------------------------------
 
-Right now, in the 'importers' directory of the project, there's a script to convert a WordPress XML backup file to the
+Right now, there's the swg-wordpress script you can use to convert a WordPress XML backup file to the
 SWG format, to use it consider the following:
 
 ::
 
-    python wordpress.py --help
+    swg-wordpress --help
     - SWG Wordpress Backup Importer -
     
-    Usage: wordpress.py -i wordpress-backup.xml -u 'http://www.your-site-url.com' <options>
+    Usage: swg-wordpress -i wordpress-backup.xml -u 'http://www.your-site-url.com' <options>
     
     
     Options:
@@ -95,7 +93,7 @@ will use the command line:
 
 ::
 
-    python wordpress.py -i wp.xml -u http://www.example-site.com -o 'example-site.com' -I 'example-site.com/images'
+    swg-wordpress -i wp.xml -u http://www.example-site.com -o 'example-site.com' -I 'example-site.com/images'
 
 And it's all done!
 Now you just have to create the templates, fix the categories hyerarchy inside the file 'example-site.com/db/categories.txt', customize

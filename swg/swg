@@ -55,5 +55,7 @@ try:
   else:
     oparser.error( "%s invalid action!" % options.action )
 
+except IOError as e:
+  print "@ IO Error: %s" % e
 except Exception as e:	
   raise
