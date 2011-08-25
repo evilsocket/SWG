@@ -30,7 +30,6 @@ import SocketServer
 from swg.core.config      import Config
 from swg.core.pageparser  import PageParser
 from swg.entities.page    import Page
-from swg.core.diffmanager import DiffManager
 
 class Engine:
   __instance = None
@@ -233,11 +232,7 @@ To test the website locally.""" % (destfolder,destfolder)
 
     if self.config.transfer is not None:
       os.system( self.config.transfer.encode( "UTF-8" ) )
-    else:
-      for filename, info in DiffManager.getInstance().changes.items():
-        ( digest, status ) = info
-        print "@ %-8s : '%s'" % ( status, filename.encode( "UTF-8" ) )
-
+    
   @classmethod
   def getInstance(cls):
     if cls.__instance is None:

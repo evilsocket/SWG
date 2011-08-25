@@ -22,9 +22,8 @@ import re
 import os
 import hashlib
 
-from swg.core.config      import Config
-from swg.core.diffmanager import DiffManager
-from swg.core.pager       import Pager
+from swg.core.config import Config
+from swg.core.pager  import Pager
 
 class Item:
   SLUGIFY_SPLIT_REGEXP  = re.compile( r'[^\w]+' )
@@ -41,8 +40,6 @@ class Item:
     self.name        = self.__generate_name()
     self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
     self.objects     = {}
-    self.hash_id     = hashlib.md5( self.url.encode( "utf-8" ) ).hexdigest()
-    self.digest      = ""
     self.npages      = 1
     self.gzip        = Config.getInstance().gzip
     self.compression = Config.getInstance().compression
@@ -96,7 +93,7 @@ class Item:
 
   def create(self):  
     config = Config.getInstance()
-    path   = config.outputpath + os.sep + self.path
+    path   = "%s%s%s" % ( config.outputpath, os.sep, self.path )
 
     if not os.path.exists( path ):
       os.mkdir(path)
@@ -117,18 +114,10 @@ class Item:
       for filename in pager:
         filename = os.path.join( path, filename )
         content  = self.render()
-
-        self.digest = hashlib.md5( content ).hexdigest()
-
-        DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
-
+        
         self.__save_contents( filename, content )
     else:
       filename = os.path.join( path, "%s.%s" % (self.name, self.extension) )
       content  = self.render()
-
-      self.digest = hashlib.md5( content ).hexdigest()
-
-      DiffManager.getInstance().checkItem( filename, self.hash_id, self.digest )
 
       self.__save_contents( filename, content )
