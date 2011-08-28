@@ -74,11 +74,12 @@ setup( name                 = 'swg',
        license              = 'GPL',
        zip_safe             = False,
        classifiers          = [
-            'Development Status :: 4 - Beta',
+            'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
             'Intended Audience :: End Users/Desktop',
             'Intended Audience :: Developers',
             'Intended Audience :: System Administrators',
+            'Intended Audience :: Information Technology',
             'License :: OSI Approved :: GNU General Public License (GPL)',
             'Operating System :: MacOS :: MacOS X',
             'Operating System :: Unix',
@@ -90,6 +91,7 @@ setup( name                 = 'swg',
             'Topic :: Software Development :: Code Generators',
             'Topic :: Internet',
             'Topic :: Internet :: WWW/HTTP :: Site Management',
+            'Natural Language :: English'
       ]
 )
 
