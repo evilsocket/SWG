@@ -25,7 +25,7 @@ import os
 class Config:
   __instance = None;
 
-  version = '1.2.8'
+  version = '1.2.8.1'
 
   def __init__(self):
     self.now            = datetime.datetime.now()

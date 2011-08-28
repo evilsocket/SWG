@@ -21,6 +21,7 @@
 
 import os
 import sys
+import time
 import os.path
 import re
 import shutil
@@ -31,20 +32,62 @@ from swg.core.config      import Config
 from swg.core.pageparser  import PageParser
 from swg.entities.page    import Page
 
+class ProgressBar:
+  def __init__( self, min_value = 0, max_value = 100, width = 77, char = '#' ):
+    self.char   = char
+    self.bar  = ''
+    self.min  = min_value
+    self.max  = max_value if max_value != None else 0
+    self.span   = self.max - self.min
+    self.width  = width
+    self.amount = 0
+    self.update_amount(0) 
+ 
+  def increment_amount(self, add_amount = 1):
+    new_amount = self.amount + add_amount
+    if new_amount < self.min: new_amount = self.min
+    if new_amount > self.max: new_amount = self.max
+    self.amount = new_amount
+    self.build_bar()
+ 
+  def update_amount(self, new_amount = None):
+    if not new_amount: new_amount = self.amount
+    if new_amount < self.min: new_amount = self.min
+    if new_amount > self.max: new_amount = self.max
+    self.amount = new_amount
+    self.build_bar()
+ 
+  def build_bar(self):
+    diff = float(self.amount - self.min)
+    percent_done = int(round((diff / float(self.span)) * 100.0)) if self.max != 0 else 100
+ 
+    # figure the proper number of 'character' make up the bar 
+    all_full = self.width - 2
+    num_hashes = int(round((percent_done * all_full) / 100))
+ 
+    self.bar = self.char * num_hashes + ' ' * (all_full-num_hashes)
+ 
+    percent_str = str(percent_done) + "%"
+    self.bar = '[ ' + self.bar + ' ] ' + percent_str
+ 
+  def __str__(self):
+    return str(self.bar)
+    
 class Engine:
   __instance = None
 
   def __init__(self):
-    self.config  = Config.getInstance()
-    self.dbdir   = os.path.join( self.config.dbpath, 'pages' )
-    self.files   = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
-    self.path    = os.path.dirname( os.path.realpath( __file__ ) )
-    self.pages   = []
-    self.statics = None
-    self.index   = None
-    self.e404    = None
-    self.sitemap = None
-    self.feed    = None
+    self.config   = Config.getInstance()
+    self.dbdir    = os.path.join( self.config.dbpath, 'pages' )
+    self.files    = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
+    self.path     = os.path.dirname( os.path.realpath( __file__ ) )
+    self.pages    = []
+    self.progress = None
+    self.statics  = None
+    self.index    = None
+    self.e404     = None
+    self.sitemap  = None
+    self.feed     = None
 
   def getPageByTitle( self, title, caseSensitive = True ):
     lwr_title = title.lower() if caseSensitive is False else None
@@ -127,6 +170,7 @@ To test the website locally.""" % (destfolder,destfolder)
       print "\n@ Bye :)"
 
   def generate( self ):
+    start  = time.time( )
     parser = PageParser( )
     
     print "@ Parsing pages ..."
@@ -176,10 +220,20 @@ To test the website locally.""" % (destfolder,destfolder)
       self.feed.addObjects( { 'pages' : self.pages, 'swg' : self } )
       self.feed.extension = 'xml'
       self.feed.create()
-
-    print "@ Rendering %d pages ..." % len(self.pages)
+    
+    self.progress = ProgressBar( 0, len(self.pages) )
+    
+    # print "@ Rendering %d pages ..." % len(self.pages)
     for page in self.pages:
       page.addObjects( { 'pages' : self.pages, 'swg' : self } ).create()
+      self.progress.increment_amount()
+      sys.stdout.write( "@ Rendering %d pages : %s\r" % ( len(self.pages), self.progress ) )
+      sys.stdout.flush()
+      
+    self.progress.update_amount( len(self.pages) )
+    sys.stdout.write( "@ Rendering %d pages : %s\r" % ( len(self.pages), self.progress ) )
+    sys.stdout.flush()
+    print "\n",
 
     if os.path.exists( os.path.join( self.config.tplpath, 'sitemap.tpl' ) ):
       print "@ Creating sitemap.xml file ..."
@@ -187,48 +241,8 @@ To test the website locally.""" % (destfolder,destfolder)
       self.sitemap.addObjects( { 'index' : self.index, 'pages' : self.pages, 'swg' : self } )
       self.sitemap.extension = 'xml'
       self.sitemap.create()
-
-    if self.config.gzip is True:
-      htaccess = os.path.join( self.config.outputpath, '.htaccess' ) 
-      if os.path.exists( htaccess ):
-        fd = open( htaccess, "a+t" )
-        fd.write( """
-  # SWG Generated Code
-  AddEncoding gzip .gz
-  DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 index.phtml index.cgi index.html.gz
-
-  <Files *.""" + self.config.page_ext + """.gz>
-    ForceType text/html
-  </Files>
-
-  <FilesMatch .*\.(""" + self.config.page_ext + """)>
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME}.gz -f
-    RewriteRule ^(.*)$ $1.gz [L]
-  </FilesMatch>""" )
-        fd.close()
-      else:
-        fd = open( htaccess, "w+t" )
-        fd.write( """
-  # SWG Generated Code
-  Options +FollowSymlinks
-  RewriteEngine on
-
-  AddEncoding gzip .gz
-  DirectoryIndex index.html index.htm index.shtml index.php index.php4 index.php3 index.phtml index.cgi index.html.gz
-
-  <Files *.""" + self.config.page_ext + """.gz>
-    ForceType text/html
-  </Files>
-
-  <FilesMatch .*\.(""" + self.config.page_ext + """)>
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME}.gz -f
-    RewriteRule ^(.*)$ $1.gz [L]
-  </FilesMatch>""" )
-        fd.close()
-
-    print "@ DONE\n"
+  
+    print "@ Website succesfully generated in %s .\n" % time.strftime('%H:%M:%S', time.gmtime( time.time() - start ) )
 
     if self.config.transfer is not None:
       os.system( self.config.transfer.encode( "UTF-8" ) )
