@@ -26,98 +26,98 @@ from swg.core.config import Config
 from swg.core.pager  import Pager
 
 class Item:
-  SLUGIFY_SPLIT_REGEXP  = re.compile( r'[^\w]+' )
-  PAGER_ENABLED_CLASSES = (
-    'swg.entities.category.Category',
-    'swg.entities.tag.Tag',
-    'swg.entities.author.Author'
-  )
+    SLUGIFY_SPLIT_REGEXP  = re.compile( r'[^\w]+' )
+    PAGER_ENABLED_CLASSES = (
+        'swg.entities.category.Category',
+        'swg.entities.tag.Tag',
+        'swg.entities.author.Author'
+    )
 
-  def __init__( self, path, title, extension ):
-    self.path        = path.replace( '//', '/' ) 
-    self.title       = title.strip()
-    self.extension   = extension.strip()
-    self.name        = self.__generate_name()
-    self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
-    self.objects     = {}
-    self.npages      = 1
-    self.gzip        = Config.getInstance().gzip
-    self.compression = Config.getInstance().compression
-    self.gzip_allow  = re.compile( '^.+\.' + Config.getInstance().page_ext + '$', re.IGNORECASE )
+    def __init__( self, path, title, extension ):
+        self.path        = path.replace( '//', '/' ) 
+        self.title       = title.strip()
+        self.extension   = extension.strip()
+        self.name        = self.__generate_name()
+        self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
+        self.objects     = {}
+        self.npages      = 1
+        self.gzip        = Config.getInstance().gzip
+        self.compression = Config.getInstance().compression
+        self.gzip_allow  = re.compile( '^.+\.' + Config.getInstance().page_ext + '$', re.IGNORECASE )
 
-  def __generate_name( self ):
-    result = []
-    for word in Item.SLUGIFY_SPLIT_REGEXP.split( self.title.lower() ):
-      result.extend( word.split() )
+    def __generate_name( self ):
+        result = []
+        for word in Item.SLUGIFY_SPLIT_REGEXP.split( self.title.lower() ):
+            result.extend( word.split() )
 
-    return '-'.join(result)
+        return '-'.join(result)
 
-  def __save_contents( self, filename, contents ):
-    if self.gzip is True and self.gzip_allow.match( filename ):
-      import gzip
-      import cStringIO
+    def __save_contents( self, filename, contents ):
+        if self.gzip is True and self.gzip_allow.match( filename ):
+            import gzip
+            import cStringIO
 
-      fdio = cStringIO.StringIO()
-      fd   = gzip.GzipFile( mode = 'wb',  fileobj = fdio, compresslevel = 9 )
-      fd.write( contents )
-      fd.close()
+            fdio = cStringIO.StringIO()
+            fd   = gzip.GzipFile( mode = 'wb',  fileobj = fdio, compresslevel = 9 )
+            fd.write( contents )
+            fd.close()
 
-      filename = filename + u'.gz'
-      contents = fdio.getvalue()
+            filename = filename + u'.gz'
+            contents = fdio.getvalue()
 
-    fd = open( filename.encode('UTF-8'), "w+b" )
-    fd.write( contents )
-    fd.close()
-  
-  def addObject( self, name, value ):
-    self.objects[name] = value
+        fd = open( filename.encode('UTF-8'), "w+b" )
+        fd.write( contents )
+        fd.close()
     
-    if hasattr( self, 'author') and self.author is not None:
-      self.author.addObject( name, value )
-    
-    if hasattr( self, 'categories' ):
-      for category in self.categories:
-        category.addObject( name, value )
-    
-    if hasattr( self, 'tags' ):
-      for tag in self.tags:
-        tag.addObject( name, value )
-
-    return self
-
-  def addObjects( self, dictionary ):
-    for name, value in dictionary.items():
-      self.addObject( name, value )
-  
-    return self
-
-  def create(self):  
-    config = Config.getInstance()
-    path   = "%s%s%s" % ( config.outputpath, os.sep, self.path )
-
-    if not os.path.exists( path ):
-      os.mkdir(path)
-
-    if config.pager == True and (self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES):     
-      pager = Pager( '%s.%s'     % ( self.name, self.extension ),
-                     '%s-%%d.%s' % ( self.name, self.extension ) )
-      
-      if hasattr( self, 'items' ):
-        pager.setPages( self.items )
-      else:
-        pager.setPages( self.objects['pages'] )
-
-      self.npages = pager.getTotalPages()
-
-      self.addObject( 'pager', pager )
-
-      for filename in pager:
-        filename = os.path.join( path, filename )
-        content  = self.render()
+    def addObject( self, name, value ):
+        self.objects[name] = value
         
-        self.__save_contents( filename, content )
-    else:
-      filename = os.path.join( path, "%s.%s" % (self.name, self.extension) )
-      content  = self.render()
+        if hasattr( self, 'author') and self.author is not None:
+            self.author.addObject( name, value )
+        
+        if hasattr( self, 'categories' ):
+            for category in self.categories:
+                category.addObject( name, value )
+        
+        if hasattr( self, 'tags' ):
+            for tag in self.tags:
+                tag.addObject( name, value )
 
-      self.__save_contents( filename, content )
+        return self
+
+    def addObjects( self, dictionary ):
+        for name, value in dictionary.items():
+            self.addObject( name, value )
+    
+        return self
+
+    def create(self):  
+        config = Config.getInstance()
+        path   = "%s%s%s" % ( config.outputpath, os.sep, self.path )
+
+        if not os.path.exists( path ):
+            os.mkdir(path)
+
+        if config.pager == True and (self.title == 'index' or str(self.__class__) in Item.PAGER_ENABLED_CLASSES):     
+            pager = Pager( '%s.%s'     % ( self.name, self.extension ),
+                                          '%s-%%d.%s' % ( self.name, self.extension ) )
+            
+            if hasattr( self, 'items' ):
+                pager.setPages( self.items )
+            else:
+                pager.setPages( self.objects['pages'] )
+
+            self.npages = pager.getTotalPages()
+
+            self.addObject( 'pager', pager )
+
+            for filename in pager:
+                filename = os.path.join( path, filename )
+                content  = self.render()
+                
+                self.__save_contents( filename, content )
+        else:
+            filename = os.path.join( path, "%s.%s" % (self.name, self.extension) )
+            content  = self.render()
+
+            self.__save_contents( filename, content )

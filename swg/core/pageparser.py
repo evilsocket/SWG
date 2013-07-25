@@ -25,52 +25,52 @@ from swg.core.categorymanager import CategoryManager
 from swg.core.tagmanager      import TagManager
 
 class PageParser(ItemParser):
-  MANDATORY_FIELDS = {
-    'date'       : 'datetime',
-    'author'     : 'string',
-    'categories' : 'array',
-    'tags'       : 'array',
-    'title'      : 'string'
-  }
+    MANDATORY_FIELDS = {
+        'date'       : 'datetime',
+        'author'     : 'string',
+        'categories' : 'array',
+        'tags'       : 'array',
+        'title'      : 'string'
+    }
 
-  OPTIONAL_FIELDS = {
-    'static' : 'boolean'  
-  }
-  
-  def __init__(self):
-    ItemParser.__init__(self)
-        
-  def parse( self, filename ):
-    ItemParser.parse( self, PageParser.MANDATORY_FIELDS, filename, PageParser.OPTIONAL_FIELDS )
-
-    page = Page( self.info['title'] )
-
-    if 'static' in self.info:
-      page.static = self.info['static']
-
-    author = AuthorManager.getInstance().get( self.info['author'] )
-    author.items.append(page)
+    OPTIONAL_FIELDS = {
+        'static' : 'boolean'  
+    }
     
-    categories = []
-    for title in self.info['categories']:
-      category = CategoryManager.getInstance().get(title)
-      category.items.append(page)
-      categories.append( category )
+    def __init__(self):
+        ItemParser.__init__(self)
+                
+    def parse( self, filename ):
+        ItemParser.parse( self, PageParser.MANDATORY_FIELDS, filename, PageParser.OPTIONAL_FIELDS )
 
-    tags = []
-    for title in self.info['tags']:
-      tag = TagManager.getInstance().get(title)
-      tag.items.append(page)
-      tags.append( tag )
+        page = Page( self.info['title'] )
 
-    page.datetime   = self.info['date']
-    page.author     = author
-    page.categories = categories
-    page.tags       = tags
-    page.abstract   = self.abstract
-    page.content    = self.body
+        if 'static' in self.info:
+            page.static = self.info['static']
 
-    # reset the state
-    ItemParser.__init__(self)
+        author = AuthorManager.getInstance().get( self.info['author'] )
+        author.items.append(page)
+        
+        categories = []
+        for title in self.info['categories']:
+            category = CategoryManager.getInstance().get(title)
+            category.items.append(page)
+            categories.append( category )
 
-    return page
+        tags = []
+        for title in self.info['tags']:
+            tag = TagManager.getInstance().get(title)
+            tag.items.append(page)
+            tags.append( tag )
+
+        page.datetime   = self.info['date']
+        page.author     = author
+        page.categories = categories
+        page.tags       = tags
+        page.abstract   = self.abstract
+        page.content    = self.body
+
+        # reset the state
+        ItemParser.__init__(self)
+
+        return page

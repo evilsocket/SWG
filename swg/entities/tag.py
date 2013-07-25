@@ -25,16 +25,16 @@ from swg.core.config          import Config
 from swg.core.templatemanager import TemplateManager
 
 class Tag(Item):
-  def __init__( self, title ):
-    Item.__init__( self, Config.getInstance().basepath + os.sep + 'tags', title, Config.getInstance().page_ext )
-    self.title    = title
-    self.items    = []
-    self.template = TemplateManager.getInstance().get('tag.tpl')
-    self.sorted   = False
+    def __init__( self, title ):
+        Item.__init__( self, Config.getInstance().basepath + os.sep + 'tags', title, Config.getInstance().page_ext )
+        self.title    = title
+        self.items    = []
+        self.template = TemplateManager.getInstance().get('tag.tpl')
+        self.sorted   = False
 
-  def render( self ):
-    if not self.sorted:
-      self.items.sort( reverse=True, key=lambda item: item.datetime )
-      self.sorted = True
+    def render( self ):
+        if not self.sorted:
+            self.items.sort( reverse=True, key=lambda item: item.datetime )
+            self.sorted = True
 
-    return TemplateManager.render( template = self.template, tag = self, **self.objects )
+        return TemplateManager.render( template = self.template, tag = self, **self.objects )

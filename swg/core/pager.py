@@ -23,68 +23,68 @@ import math
 from swg.core.config import Config
 
 class Pager:
-  def __init__( self, firstpage, format ):
-    self.current   = 0
-    self.pagen     = 0
-    self.firstpage = firstpage
-    self.format    = format
-    self.pages     = []
-    self.max       = 0
-    self.left      = 0
-    self.total     = 0
-    self.config    = Config.getInstance()
+    def __init__( self, firstpage, format ):
+        self.current   = 0
+        self.pagen     = 0
+        self.firstpage = firstpage
+        self.format    = format
+        self.pages     = []
+        self.max       = 0
+        self.left      = 0
+        self.total     = 0
+        self.config    = Config.getInstance()
 
-  def setPages( self, pages ):
-    self.pages = pages
-    self.max   = len(pages) 
-    self.left  = self.max
-    self.total = math.ceil( self.max / self.config.items_per_page )
-    self.total += 1 if self.max % self.config.items_per_page != 0 else 0
-    self.total = int(self.total)
-    
-  def getCurrentPageFilename(self):
-    return self.format % self.pagen if self.pagen != 1 else self.firstpage
-
-  def getCurrentPageNumber(self):
-    return self.pagen
-
-  def getTotalPages(self):
-    return self.total
-
-  def getCurrentPages( self, includeStatic = False ):
-    begin  = (self.pagen - 1) * self.config.items_per_page
-    number = min( self.config.items_per_page, self.left )
-    end    = begin + number
-
-    if includeStatic:
-      return self.pages[begin:end]
-    else:
-      done    = 0
-      current = []
+    def setPages( self, pages ):
+        self.pages = pages
+        self.max   = len(pages) 
+        self.left  = self.max
+        self.total = math.ceil( self.max / self.config.items_per_page )
+        self.total += 1 if self.max % self.config.items_per_page != 0 else 0
+        self.total = int(self.total)
         
-      for page in self.pages[begin:]:
-        if page.static is False:
-          current.append(page)
-          done += 1
-          if done >= number:
-            break
+    def getCurrentPageFilename(self):
+        return self.format % self.pagen if self.pagen != 1 else self.firstpage
 
-      return current
+    def getCurrentPageNumber(self):
+        return self.pagen
 
-  def goToNext(self):
-    self.left = self.max - self.current
-    if self.left <= 0:
-      return False
-    else:
-      self.current += min( self.config.items_per_page, self.left )
-      return True
+    def getTotalPages(self):
+        return self.total
 
-  def __iter__(self):
-    return self
+    def getCurrentPages( self, includeStatic = False ):
+        begin  = (self.pagen - 1) * self.config.items_per_page
+        number = min( self.config.items_per_page, self.left )
+        end    = begin + number
 
-  def next(self):
-    if self.goToNext() == False:
-      raise StopIteration
-    else:
-      self.pagen += 1
-      return self.getCurrentPageFilename()
+        if includeStatic:
+            return self.pages[begin:end]
+        else:
+            done    = 0
+            current = []
+                
+            for page in self.pages[begin:]:
+                if page.static is False:
+                    current.append(page)
+                    done += 1
+                    if done >= number:
+                        break
+
+            return current
+
+    def goToNext(self):
+        self.left = self.max - self.current
+        if self.left <= 0:
+            return False
+        else:
+            self.current += min( self.config.items_per_page, self.left )
+            return True
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.goToNext() == False:
+            raise StopIteration
+        else:
+            self.pagen += 1
+            return self.getCurrentPageFilename()

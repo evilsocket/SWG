@@ -24,20 +24,20 @@ from swg.core.authorparser import AuthorParser
 from swg.core.config       import Config
 
 class AuthorManager:
-  __instance = None
+    __instance = None
 
-  def __init__(self):
-    self.authors = {}
+    def __init__(self):
+        self.authors = {}
 
-  def get( self, username ):
-    id = username.lower()
-    if not self.authors.has_key(id):
-      self.authors[id] = AuthorParser().parse( os.path.join( Config.getInstance().dbpath, ( "%s.%s" % (username,Config.getInstance().dbitem_ext) ) ) )
+    def get( self, username ):
+        id = username.lower()
+        if not self.authors.has_key(id):
+            self.authors[id] = AuthorParser().parse( os.path.join( Config.getInstance().dbpath, ( "%s.txt" % (username) ) ) )
 
-    return self.authors[id]
+        return self.authors[id]
 
-  @classmethod
-  def getInstance(cls):
-    if cls.__instance is None:
-      cls.__instance = AuthorManager()
-    return cls.__instance
+    @classmethod
+    def getInstance(cls):
+        if cls.__instance is None:
+            cls.__instance = AuthorManager()
+        return cls.__instance

@@ -21,28 +21,28 @@
 from swg.entities.tag import Tag
 
 class TagManager:
-  __instance = None
+    __instance = None
 
-  def __init__(self):
-    self.tags   = {}
-    self.sorted = None
+    def __init__(self):
+        self.tags   = {}
+        self.sorted = None
 
-  def get( self, title = None ):
-    if title != None:
-      id = title.lower()
-      if not self.tags.has_key(id):
-        self.tags[id] = Tag(title)
+    def get( self, title = None ):
+        if title != None:
+            id = title.lower()
+            if not self.tags.has_key(id):
+                self.tags[id] = Tag(title)
 
-      return self.tags[id]
-    else:
-      if self.sorted is None:
-        self.sorted = self.tags.values()
-        self.sorted.sort( reverse=True, key=lambda t: len(t.items) )
+            return self.tags[id]
+        else:
+            if self.sorted is None:
+                self.sorted = self.tags.values()
+                self.sorted.sort( reverse=True, key=lambda t: len(t.items) )
 
-      return self.sorted
+            return self.sorted
 
-  @classmethod
-  def getInstance(cls):
-    if cls.__instance is None:
-      cls.__instance = TagManager()
-    return cls.__instance
+    @classmethod
+    def getInstance(cls):
+        if cls.__instance is None:
+            cls.__instance = TagManager()
+        return cls.__instance

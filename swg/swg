@@ -35,27 +35,27 @@ oparser.add_option( '-S', '--serve',    action = 'store_const', const = 'serve',
 (options, args) = oparser.parse_args()
 
 try:
- 
-  if options.action is None:
-    oparser.error( "No action specified, use --help to see a list of available actions." )
-  elif options.action == 'create':
-    if args == []:
-      oparser.error( "No website folder specified, please use the syntax '--create website-folder-name'.")
+  
+    if options.action is None:
+        oparser.error( "No action specified, use --help to see a list of available actions." )
+    elif options.action == 'create':
+        if args == []:
+            oparser.error( "No website folder specified, please use the syntax '--create website-folder-name'.")
+        else:
+            Engine().create( args[0].strip() )
+    elif options.action == 'new':
+        Config.getInstance().load('swg.cfg')
+        Engine().new()
+    elif options.action == 'serve':
+        Config.getInstance().load('swg.cfg')
+        Engine().serve()
+    elif options.action == 'generate':
+        Config.getInstance().load('swg.cfg')
+        Engine().generate()  
     else:
-      Engine().create( args[0].strip() )
-  elif options.action == 'new':
-    Config.getInstance().load('swg.cfg')
-    Engine().new()
-  elif options.action == 'serve':
-    Config.getInstance().load('swg.cfg')
-    Engine().serve()
-  elif options.action == 'generate':
-    Config.getInstance().load('swg.cfg')
-    Engine().generate()  
-  else:
-    oparser.error( "%s invalid action!" % options.action )
+        oparser.error( "%s invalid action!" % options.action )
 
 except IOError as e:
-  print "@ IO Error: %s" % e
+    print "@ IO Error: %s" % e
 except Exception as e:	
-  raise
+    raise

@@ -25,22 +25,22 @@ from swg.core.config          import Config
 from swg.core.templatemanager import TemplateManager
 
 class Author(Item):
-  def __init__( self, username ):
-    Item.__init__( self, Config.getInstance().basepath + os.sep + 'members', username, Config.getInstance().page_ext )
-    self.username = username
-    self.items    = []
-    self.avatar   = ""
-    self.email    = ""
-    self.website  = ""
-    self.abstract = ""
-    self.content  = ""
-    self.template = TemplateManager.getInstance().get('author.tpl')
-    self.sorted   = False
+    def __init__( self, username ):
+        Item.__init__( self, Config.getInstance().basepath + os.sep + 'members', username, Config.getInstance().page_ext )
+        self.username = username
+        self.items    = []
+        self.avatar   = ""
+        self.email    = ""
+        self.website  = ""
+        self.abstract = ""
+        self.content  = ""
+        self.template = TemplateManager.getInstance().get('author.tpl')
+        self.sorted   = False
 
-  def render( self ):
-    if not self.sorted:
-      self.items.sort( reverse=True, key=lambda item: item.datetime )
-      self.sorted = True
+    def render( self ):
+        if not self.sorted:
+            self.items.sort( reverse=True, key=lambda item: item.datetime )
+            self.sorted = True
 
-    return TemplateManager.render( template = self.template, author = self, **self.objects )
+        return TemplateManager.render( template = self.template, author = self, **self.objects )
 

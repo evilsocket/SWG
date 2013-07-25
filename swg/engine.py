@@ -110,7 +110,7 @@ class Engine:
       if int(id) > maxid:
         maxid = int(id)
     
-    newitem = os.path.join( self.dbdir, "%d.%s" % (maxid + 1, self.config.dbitem_ext) )
+    newitem = os.path.join( self.dbdir, "%d.md" % (maxid + 1) )
     fd      = open( newitem, 'w+t' )
 
     fd.write( """\
@@ -175,7 +175,7 @@ To test the website locally.""" % (destfolder,destfolder)
     
     print "@ Parsing pages ..."
     for file in self.files:
-      if re.match( '^.+\.' + self.config.dbitem_ext + '$', file ):
+      if re.match( '^[^\.]+\..+$', file ):
         filename = os.path.join( self.dbdir, file )
         page     = parser.parse( filename )
         self.pages.append(page)

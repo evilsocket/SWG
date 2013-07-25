@@ -24,14 +24,14 @@ import datetime
 from swg.core.config import Config
 
 class ItemParser:
-  PARSE_NONE_STATE = 0
-  PARSE_INFO_STATE = 1
-  PARSE_BODY_STATE = 2
-  PARSE_DONE_STATE = 3
+    PARSE_NONE_STATE = 0
+    PARSE_INFO_STATE = 1
+    PARSE_BODY_STATE = 2
+    PARSE_DONE_STATE = 3
 
-  BODY_ABSTRACT_BREAK = u'<break>'
+    BODY_ABSTRACT_BREAK = u'<break>'
 
-  TIDY_OPTIONS = {  'alt-text'          : ' ',
+    TIDY_OPTIONS = {'alt-text'          : ' ',
                     'doctype'           : 'transitional',
                     'bare'              : 1,
                     'clean'             : 0,
@@ -56,88 +56,94 @@ class ItemParser:
                     'quiet'             : 1,
                     'tidy-mark'         : 0,
                     'show-body-only'    : 1
-                  }
+                   }
 
-  def __init__(self):
-    self.info     = {}
-    self.abstract = ""
-    self.body     = ""
-    self.state    = ItemParser.PARSE_NONE_STATE
-    self.lineno   = 1
+    def __init__(self):
+        self.info     = {}
+        self.abstract = ""
+        self.body     = ""
+        self.state    = ItemParser.PARSE_NONE_STATE
+        self.lineno   = 1
 
-  def __parse_datetime( self, data ):
-    return datetime.datetime.strptime( data, '%Y-%m-%d %H:%M:%S' )
+    def __parse_datetime( self, data ):
+        return datetime.datetime.strptime( data, '%Y-%m-%d %H:%M:%S' )
 
-  def __parse_string( self, data ):
-    return data
+    def __parse_string( self, data ):
+        return data
 
-  def __parse_array( self, data ):
-    return [ s.strip() for s in data.split(',') ] 
-    
-  def __parse_boolean( self, data ):
-    return True if data.lower() == 'true' else False
+    def __parse_array( self, data ):
+        return [ s.strip() for s in data.split(',') ] 
+        
+    def __parse_boolean( self, data ):
+        return True if data.lower() == 'true' else False
 
-  def parse( self, mandatory_fields_map, filename, optional_fields_map = None ):
-    fd = codecs.open( filename, "r", "utf-8" )
+    def parse( self, mandatory_fields_map, filename, optional_fields_map = None ):
+        fd = codecs.open( filename, "r", "utf-8" )
 
-    self.state = ItemParser.PARSE_INFO_STATE
+        self.state = ItemParser.PARSE_INFO_STATE
 
-    for line in iter(fd):
-      if self.state == ItemParser.PARSE_INFO_STATE:
-        line = line.strip()
-        if line == '':
-          self.state = ItemParser.PARSE_BODY_STATE
+        for line in iter(fd):
+            if self.state == ItemParser.PARSE_INFO_STATE:
+                line = line.strip()
+                if line == '':
+                    self.state = ItemParser.PARSE_BODY_STATE
+                else:
+                    ( info_id, info_data ) = line.split( ':', 1 )
+                    info_id   = info_id.strip().lower()
+                    info_data = info_data.strip()
+                    info_type = None
+
+                    try:
+                        info_type = mandatory_fields_map[info_id]  
+                    except KeyError:
+                        try:
+                            info_type = optional_fields_map[info_id]
+                        except:
+                            raise Exception( "Unknown key %s on line %d." % ( info_id, self.lineno ) )
+
+                    if info_type == 'datetime':
+                        self.info[info_id] = self.__parse_datetime(info_data)
+                    elif info_type == 'string':
+                        self.info[info_id] = self.__parse_string(info_data)
+                    elif info_type == 'array':
+                        self.info[info_id] = self.__parse_array(info_data)
+                    elif info_type == 'boolean':
+                        self.info[info_id] = self.__parse_boolean(info_data) 
+                    
+            elif self.state == ItemParser.PARSE_BODY_STATE:
+                self.body += line
+            else:
+                raise Exception( "Unhandled parser state on line %d." % self.lineno )
+
+            self.lineno += 1
+
+        fd.close()
+        
+        missing = filter( lambda x:x not in self.info.keys(), mandatory_fields_map.keys() )
+        if missing != []:
+            raise Exception( "Missing mandatory fields : %s" % ', '.join(missing) )
+        
+        # Parse markdown content
+        if filename.endswith('.md') or filename.endswith('.markdown'):
+            import markdown
+            self.body = markdown.markdown( self.body, extensions=['headerid(level=2)'] )
+
+        if ItemParser.BODY_ABSTRACT_BREAK in self.body:
+            ( self.abstract, therest ) = self.body.split( ItemParser.BODY_ABSTRACT_BREAK, 1 )
+            self.body = self.abstract.strip() + '<br/><br/>' + therest.strip()
         else:
-          ( info_id, info_data ) = line.split( ':', 1 )
-          info_id   = info_id.strip().lower()
-          info_data = info_data.strip()
-          info_type = None
+            self.abstract = self.body
 
-          try:
-            info_type = mandatory_fields_map[info_id]  
-          except KeyError:
-            try:
-              info_type = optional_fields_map[info_id]
-            except:
-              raise Exception( "Unknown key %s on line %d." % ( info_id, self.lineno ) )
+        # Fix <break> pseudo attribute newlines
+        self.body     = self.body.replace( "\n\n", "<br/><br/>" )
+        self.abstract = self.abstract.replace( "\n\n", "<br/><br/>" )
 
-          if info_type == 'datetime':
-            self.info[info_id] = self.__parse_datetime(info_data)
-          elif info_type == 'string':
-            self.info[info_id] = self.__parse_string(info_data)
-          elif info_type == 'array':
-            self.info[info_id] = self.__parse_array(info_data)
-          elif info_type == 'boolean':
-            self.info[info_id] = self.__parse_boolean(info_data) 
-          
-      elif self.state == ItemParser.PARSE_BODY_STATE:
-        self.body += line
-      else:
-        raise Exception( "Unhandled parser state on line %d." % self.lineno )
+        # Tidyfy abstract and body html and fix encoding errors
+        if Config.getInstance().tidyfy is True:
+            import tidy
 
-      self.lineno += 1
+            self.body     = tidy.parseString( self.body.encode( 'UTF-8',     'replace' ),     **ItemParser.TIDY_OPTIONS )
+            self.abstract = tidy.parseString( self.abstract.encode( 'UTF-8', 'replace' ), **ItemParser.TIDY_OPTIONS )
+            self.body     = str(self.body).decode('UTF-8')
+            self.abstract = str(self.abstract).decode('UTF-8')
 
-    missing = filter( lambda x:x not in self.info.keys(), mandatory_fields_map.keys() )
-    if missing != []:
-      raise Exception( "Missing mandatory fields : %s" % ', '.join(missing) )
-
-    if ItemParser.BODY_ABSTRACT_BREAK in self.body:
-      ( self.abstract, therest ) = self.body.split( ItemParser.BODY_ABSTRACT_BREAK, 1 )
-      self.body = self.abstract.strip() + '<br/><br/>' + therest.strip()
-    else:
-      self.abstract = self.body
-
-    # Fix <break> pseudo attribute newlines
-    self.body     = self.body.replace( "\n\n", "<br/><br/>" )
-    self.abstract = self.abstract.replace( "\n\n", "<br/><br/>" )
-
-    # Tidyfy abstract and body html and fix encoding errors
-    if Config.getInstance().tidyfy is True:
-      import tidy
-
-      self.body     = tidy.parseString( self.body.encode( 'UTF-8',     'replace' ),     **ItemParser.TIDY_OPTIONS )
-      self.abstract = tidy.parseString( self.abstract.encode( 'UTF-8', 'replace' ), **ItemParser.TIDY_OPTIONS )
-      self.body     = str(self.body).decode('UTF-8')
-      self.abstract = str(self.abstract).decode('UTF-8')
-
-    fd.close()

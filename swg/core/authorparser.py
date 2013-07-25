@@ -22,24 +22,24 @@ from swg.core.itemparser import ItemParser
 from swg.entities.author import Author
 
 class AuthorParser(ItemParser):
-  MANDATORY_FIELDS = {
-    'username' : 'string',
-    'avatar'   : 'string',
-    'email'    : 'string',
-    'website'  : 'string'
-  }
+    MANDATORY_FIELDS = {
+        'username' : 'string',
+        'avatar'   : 'string',
+        'email'    : 'string',
+        'website'  : 'string'
+    }
 
-  def __init__(self):
-    ItemParser.__init__(self)
+    def __init__(self):
+        ItemParser.__init__(self)
 
-  def parse( self, filename ):
-    ItemParser.parse( self, AuthorParser.MANDATORY_FIELDS, filename )
-    
-    object = Author( self.info['username'] )
-    object.avatar   = self.info['avatar']
-    object.email    = self.info['email']
-    object.website  = self.info['website']
-    object.content  = self.body
-    object.abstract = self.abstract
+    def parse( self, filename ):
+        ItemParser.parse( self, AuthorParser.MANDATORY_FIELDS, filename )
+        
+        object = Author( self.info['username'] )
+        object.avatar   = self.info['avatar']
+        object.email    = self.info['email']
+        object.website  = self.info['website']
+        object.content  = self.body
+        object.abstract = self.abstract
 
-    return object
+        return object

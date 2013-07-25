@@ -23,92 +23,89 @@ import codecs
 import os
 
 class Config:
-  __instance = None;
+    __instance = None;
 
-  version = '1.2.8.1'
+    version = '1.2.8.1'
 
-  def __init__(self):
-    self.now            = datetime.datetime.now()
-    
-    self.editor         = 'vim'
-    self.datapath       = '.'
-    self.dbpath         = os.path.join( self.datapath, 'db' )
-    self.dbitem_ext     = "txt"
-    self.hierarchy      = os.path.join( self.dbpath, 'categories.' + self.dbitem_ext )
-    self.tplpath        = os.path.join( self.datapath, 'templates' )
-    self.tplcache       = os.path.join( self.datapath, 'cache' )
-    self.outputpath     = "output"
-    self.copypaths      = {}
+    def __init__(self):
+        self.now            = datetime.datetime.now()
+        
+        self.editor         = 'vim'
+        self.datapath       = '.'
+        self.dbpath         = os.path.join( self.datapath, 'db' )
+        self.hierarchy      = os.path.join( self.dbpath, 'categories.txt' )
+        self.tplpath        = os.path.join( self.datapath, 'templates' )
+        self.tplcache       = os.path.join( self.datapath, 'cache' )
+        self.outputpath     = "output"
+        self.copypaths      = {}
 
-    self.siteurl        = ""
-    self.sitename       = "Generated with SWG " + self.version
-    self.charset        = "utf-8"
-    self.language       = "en"
-    self.keywords       = []
-    
-    self.basepath       = '/'
-    self.page_ext       = "html"
-    self.pager          = False
-    self.items_per_page = 10
+        self.siteurl        = ""
+        self.sitename       = "Generated with SWG " + self.version
+        self.charset        = "utf-8"
+        self.language       = "en"
+        self.keywords       = []
+        
+        self.basepath       = '/'
+        self.page_ext       = "html"
+        self.pager          = False
+        self.items_per_page = 10
 
-    self.gzip           = False
-    self.compression    = 0
-    self.tidyfy         = False
-    
-    self.transfer       = None
+        self.gzip           = False
+        self.compression    = 0
+        self.tidyfy         = False
+        
+        self.transfer       = None
 
-  def load( self, filename ):
-    fd = codecs.open( filename, "r", "utf-8" )
+    def load( self, filename ):
+        fd = codecs.open( filename, "r", "utf-8" )
 
-    for line in iter(fd):
-      line = line.strip()
-      if line != '' and line[0] != '#':
-        (key,value) = line.split( '=', 1 )
-        key   = key.strip()
-        value = value.strip()
-        if key == 'dbitem_ext':
-          self.dbitem_ext = value
-        elif key == 'siteurl':
-          self.siteurl = value 
-        elif key == 'sitename':
-          self.sitename = value
-        elif key == 'charset':
-          self.charset = value
-        elif key == 'language':
-          self.language = value
-        elif key == 'basepath':
-          self.basepath = value
-        elif key == 'page_ext':
-          self.page_ext = value
-        elif key == 'editor':
-          self.editor = value
-        elif key == 'outputpath':
-          self.outputpath = value
-        elif key == 'pager':
-          self.pager = True if value.lower() == 'true' else False
-        elif key == 'gzip':
-          self.gzip = True if value.lower() == 'true' else False
-        elif key == 'tidyfy':
-          self.tidyfy = True if value.lower() == 'true' else False
-        elif key == 'compression':
-          self.compression = int(value)
-        elif key == 'items_per_page':
-          self.items_per_page = int(value)
-        elif key == 'copypaths':
-          items = [ s.strip() for s in value.split(',') ]
-          for item in items:
-            self.copypaths[ os.path.join( self.datapath, item ) ] = os.path.join( self.outputpath, item )
-        elif key == 'keywords':
-          self.keywords = [ s.strip() for s in value.split(',') ]
-        elif key == 'transfer':
-          self.transfer = value
-        else:
-          raise Exception( "Unknown configuration key '%s'" % key )
+        for line in iter(fd):
+            line = line.strip()
+            if line != '' and line[0] != '#':
+                (key,value) = line.split( '=', 1 )
+                key   = key.strip()
+                value = value.strip()
+                if key == 'siteurl':
+                    self.siteurl = value 
+                elif key == 'sitename':
+                    self.sitename = value
+                elif key == 'charset':
+                    self.charset = value
+                elif key == 'language':
+                    self.language = value
+                elif key == 'basepath':
+                    self.basepath = value
+                elif key == 'page_ext':
+                    self.page_ext = value
+                elif key == 'editor':
+                    self.editor = value
+                elif key == 'outputpath':
+                    self.outputpath = value
+                elif key == 'pager':
+                    self.pager = True if value.lower() == 'true' else False
+                elif key == 'gzip':
+                    self.gzip = True if value.lower() == 'true' else False
+                elif key == 'tidyfy':
+                    self.tidyfy = True if value.lower() == 'true' else False
+                elif key == 'compression':
+                    self.compression = int(value)
+                elif key == 'items_per_page':
+                    self.items_per_page = int(value)
+                elif key == 'copypaths':
+                    items = [ s.strip() for s in value.split(',') ]
+                    for item in items:
+                        self.copypaths[ os.path.join( self.datapath, item ) ] = os.path.join( self.outputpath, item )
+                elif key == 'keywords':
+                    self.keywords = [ s.strip() for s in value.split(',') ]
+                elif key == 'transfer':
+                    self.transfer = value
+                else:
+                    raise Exception( "Unknown configuration key '%s'" % key )
 
-    fd.close()
+        fd.close()
 
-  @classmethod
-  def getInstance(cls):
-    if cls.__instance is None:
-      cls.__instance = Config()
-    return cls.__instance
+    @classmethod
+    def getInstance(cls):
+        if cls.__instance is None:
+            cls.__instance = Config()
+        return cls.__instance
