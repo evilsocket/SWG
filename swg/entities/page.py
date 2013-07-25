@@ -34,7 +34,7 @@ class Page(Item):
         self.abstract   = ""
         self.content    = ""
         self.static     = False
-        self.template   = TemplateManager.getInstance().get( 'page.tpl' if template is None else template )
+        self.template   = TemplateManager.getInstance().get( 'post.tpl' if template is None else template )
 
     def render( self ):
         return TemplateManager.render( template = self.template, page = self, **self.objects )

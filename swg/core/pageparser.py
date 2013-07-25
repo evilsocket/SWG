@@ -34,7 +34,8 @@ class PageParser(ItemParser):
     }
 
     OPTIONAL_FIELDS = {
-        'static' : 'boolean'  
+        'static'  : 'boolean',
+        'template': 'string' 
     }
     
     def __init__(self):
@@ -43,7 +44,7 @@ class PageParser(ItemParser):
     def parse( self, filename ):
         ItemParser.parse( self, PageParser.MANDATORY_FIELDS, filename, PageParser.OPTIONAL_FIELDS )
 
-        page = Page( self.info['title'] )
+        page = Page( self.info['title'], "%s.tpl" % self.info['template'] if 'template' in self.info else None )
 
         if 'static' in self.info:
             page.static = self.info['static']
