@@ -26,7 +26,7 @@ from swg.core.templatemanager import TemplateManager
 
 class Category(Item):
     def __init__( self, title ):
-        Item.__init__( self, Config.getInstance().basepath + os.sep + 'categories', title, Config.getInstance().page_ext )
+        Item.__init__( self, Config.getInstance().basepath + os.sep + 'categories.txt', title, Config.getInstance().page_ext )
         self.title    = title
         self.items    = []
         self.children = []

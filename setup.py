@@ -7,51 +7,14 @@ import shutil
 import os
 import sys
 
-def find_package_data( where               = '.', 
-                       package             = '',
-                       exclude             = ( '*.pyc', '*~', '*.bak', '*.swp*', '.*'),
-                       exclude_directories = ('.*', 'CVS', '_darcs', './build', './dist', 'EGG-INFO', '*.egg-info'),
-                       only_in_packages    = True,
-                       show_ignored        = False ):
-
-  out = {}
-  stack = [(convert_path(where), '', package, only_in_packages)]
-  while stack:
-    where, prefix, package, only_in_packages = stack.pop(0)
-    for name in os.listdir(where):
-      fn = os.path.join(where, name)
-      if os.path.isdir(fn):
-        bad_name = False
-        for pattern in exclude_directories:
-          if (fnmatchcase(name, pattern) or fn.lower() == pattern.lower()):
-            bad_name = True
-            if show_ignored:
-                print >> sys.stderr, ("Directory %s ignored by pattern %s" % (fn, pattern))
-            break
-            if bad_name:
-              continue
-            if os.path.isfile(os.path.join(fn, '__init__.py')):
-              if not package:
-                  new_package = name
-              else:
-                  new_package = package + '.' + name
-              stack.append((fn, '', new_package, False))
-            else:
-              stack.append((fn, prefix + name + '/', package, only_in_packages))
-          elif package or not only_in_packages:
-            # is a file
-            bad_name = False
-            for pattern in exclude:
-              if (fnmatchcase(name, pattern) or fn.lower() == pattern.lower()):
-                bad_name = True
-                if show_ignored:
-                  print >> sys.stderr, ( "File %s ignored by pattern %s" % (fn, pattern))
-                break
-            if bad_name:
-              continue
-            out.setdefault(package, []).append(prefix+name)
-
-      return out
+def get_data_files():
+    data = []
+    for folder, subdirs, files in os.walk( 'swg/basic/db/' ):
+        for fname in files:
+            if fname[0] != '.' and fname.endswith('.swp') == False:
+                data.append( os.path.join( folder, fname ) )
+    
+    return data
 
 try:
   long_description = open( 'README.md', 'rt' ).read()
@@ -67,8 +30,8 @@ setup( name                 = 'swg',
        url                  = 'http://www.github.com/evilsocket/swg',
        packages             = find_packages(),
        include_package_data = True,
-       package_data         = find_package_data( package = 'swg', only_in_packages = False ),
-       install_requires     = ( 'mako >= 0.4.1', 'utidylib' ),
+       package_data         = { 'swg': get_data_files() },
+       install_requires     = ( 'mako >= 0.4.1', 'markdown' ),
        dependency_links     = [ 'http://cctools.svn.sourceforge.net/svnroot/cctools/vendorlibs/utidylib/#egg=utidylib-0.2-cvs' ],
        scripts              = [ 'swg/swg', 'swg/swg-wordpress' ],
        license              = 'GPL',

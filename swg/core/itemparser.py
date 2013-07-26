@@ -137,13 +137,3 @@ class ItemParser:
         # Fix <break> pseudo attribute newlines
         self.body     = self.body.replace( "\n\n", "<br/><br/>" )
         self.abstract = self.abstract.replace( "\n\n", "<br/><br/>" )
-
-        # Tidyfy abstract and body html and fix encoding errors
-        if Config.getInstance().tidyfy is True:
-            import tidy
-
-            self.body     = tidy.parseString( self.body.encode( 'UTF-8',     'replace' ),     **ItemParser.TIDY_OPTIONS )
-            self.abstract = tidy.parseString( self.abstract.encode( 'UTF-8', 'replace' ), **ItemParser.TIDY_OPTIONS )
-            self.body     = str(self.body).decode('UTF-8')
-            self.abstract = str(self.abstract).decode('UTF-8')
-

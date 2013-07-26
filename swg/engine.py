@@ -79,7 +79,13 @@ class Engine:
     def __init__(self):
         self.config   = Config.getInstance()
         self.dbdir    = os.path.join( self.config.dbpath, 'pages' )
-        self.files    = os.listdir( self.dbdir ) if os.path.exists( self.dbdir ) else []
+        self.files    = []
+       
+        if os.path.exists( self.dbdir ):
+            for folder, subdirs, files in os.walk( self.dbdir ):
+                for fname in files:
+                    self.files.append( os.path.realpath( os.path.join( folder, fname ) ) ) 
+
         self.path     = os.path.dirname( os.path.realpath( __file__ ) )
         self.pages    = []
         self.progress = None
@@ -104,13 +110,7 @@ class Engine:
         return self.statics
 
     def new( self ):
-        maxid = 0
-        for file in self.files:
-            ( id, ext ) = file.split('.')
-            if int(id) > maxid:
-                maxid = int(id)
-        
-        newitem = os.path.join( self.dbdir, "%d.md" % (maxid + 1) )
+        newitem = os.path.join( self.dbdir, "%s.md" % self.config.now.strftime("%Y-%m-%d %H:%M:%S") )
         fd      = open( newitem, 'w+t' )
 
         fd.write( """\
@@ -175,7 +175,7 @@ To test the website locally.""" % (destfolder,destfolder)
         
         print "@ Parsing pages ..."
         for file in self.files:
-            if re.match( '^[^\.]+\..+$', file ):
+            if re.match( '^.+\..+$', file ):
                 filename = os.path.join( self.dbdir, file )
                 page     = parser.parse( filename )
                 self.pages.append(page)

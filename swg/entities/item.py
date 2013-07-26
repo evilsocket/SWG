@@ -41,9 +41,6 @@ class Item:
         self.url         = ("%s/%s.%s" % (self.path,self.name,self.extension)).replace( '//', '/' )
         self.objects     = {}
         self.npages      = 1
-        self.gzip        = Config.getInstance().gzip
-        self.compression = Config.getInstance().compression
-        self.gzip_allow  = re.compile( '^.+\.' + Config.getInstance().page_ext + '$', re.IGNORECASE )
 
     def __generate_name( self ):
         result = []
@@ -53,18 +50,6 @@ class Item:
         return '-'.join(result)
 
     def __save_contents( self, filename, contents ):
-        if self.gzip is True and self.gzip_allow.match( filename ):
-            import gzip
-            import cStringIO
-
-            fdio = cStringIO.StringIO()
-            fd   = gzip.GzipFile( mode = 'wb',  fileobj = fdio, compresslevel = 9 )
-            fd.write( contents )
-            fd.close()
-
-            filename = filename + u'.gz'
-            contents = fdio.getvalue()
-
         fd = open( filename.encode('UTF-8'), "w+b" )
         fd.write( contents )
         fd.close()

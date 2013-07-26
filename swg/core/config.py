@@ -49,11 +49,6 @@ class Config:
         self.page_ext       = "html"
         self.pager          = False
         self.items_per_page = 10
-
-        self.gzip           = False
-        self.compression    = 0
-        self.tidyfy         = False
-        
         self.transfer       = None
 
     def load( self, filename ):
@@ -83,12 +78,6 @@ class Config:
                     self.outputpath = value
                 elif key == 'pager':
                     self.pager = True if value.lower() == 'true' else False
-                elif key == 'gzip':
-                    self.gzip = True if value.lower() == 'true' else False
-                elif key == 'tidyfy':
-                    self.tidyfy = True if value.lower() == 'true' else False
-                elif key == 'compression':
-                    self.compression = int(value)
                 elif key == 'items_per_page':
                     self.items_per_page = int(value)
                 elif key == 'copypaths':
